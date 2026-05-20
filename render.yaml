@@ -1,0 +1,80 @@
+services:
+  - type: web
+    name: ibm-docs-llm-api
+    env: python
+    region: oregon
+    plan: starter
+    rootDir: backend
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT}
+    healthCheckPath: /api/health
+    envVars:
+      # Required: OpenAI Configuration
+      - key: OPENAI_API_KEY
+        sync: false
+      
+      # Required: Pinecone Configuration
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_ENVIRONMENT
+        value: us-west1-gcp
+      - key: PINECONE_INDEX_NAME
+        value: ibm-docs
+      - key: PINECONE_CLOUD
+        value: aws
+      
+      # Required: API Security
+      - key: API_KEY
+        generateValue: true
+      
+      # Optional: LLM Settings
+      - key: LLM_MODEL
+        value: gpt-4-turbo-preview
+      - key: LLM_TEMPERATURE
+        value: "0.7"
+      - key: MAX_TOKENS
+        value: "1000"
+      
+      # Optional: Embedding Settings
+      - key: EMBEDDING_MODEL
+        value: text-embedding-3-small
+      - key: EMBEDDING_DIMENSION
+        value: "1536"
+      
+      # Optional: RAG Settings
+      - key: TOP_K_RESULTS
+        value: "5"
+      - key: CHUNK_SIZE
+        value: "800"
+      - key: CHUNK_OVERLAP
+        value: "200"
+      - key: MIN_RELEVANCE_SCORE
+        value: "0.7"
+      
+      # Optional: CORS (JSON array format)
+      - key: ALLOWED_ORIGINS
+        value: '["*"]'
+      
+      # Optional: Redis (use Render's internal Redis or external)
+      - key: REDIS_URL
+        value: redis://localhost:6379
+      
+      # Optional: Database (SQLite by default, or use Render PostgreSQL)
+      - key: DATABASE_URL
+        value: sqlite:///./ibm_docs_llm.db
+      
+      # Optional: Logging
+      - key: LOG_LEVEL
+        value: INFO
+      - key: SENTRY_DSN
+        value: ""
+      
+      # Optional: Rate Limiting
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "60"
+      - key: RATE_LIMIT_PER_HOUR
+        value: "1000"
+      
+      # Environment
+      - key: ENVIRONMENT
+        value: production
