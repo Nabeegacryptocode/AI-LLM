@@ -1,0 +1,9 @@
+{"id":"6cff62c3-21a2-43c8-9b39-0ad8a61cb44c","ts":"2026-05-20T17:25:55.771Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\RAILWAY_DEPLOYMENT_GUIDE.md","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
+{"id":"b60e1f17-76d0-4c13-bb1c-11daafb9fafd","ts":"2026-05-20T17:26:03.051Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\DEPLOY_NOW.md","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
+{"id":"f79e888b-749b-4e1c-9a93-61793eb450da","ts":"2026-05-20T17:26:08.218Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\docs\\DEPLOYMENT.md","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
+{"id":"4c6ff5d2-975a-4cea-b7ff-b633fc88e6f2","ts":"2026-05-20T17:26:13.861Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\backend\\deploy-to-railway.ps1","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
+{"id":"fde9202e-6775-4f58-8038-0dc58e35e3e9","ts":"2026-05-20T17:26:29.085Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\backend\\deploy-to-railway.ps1","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
+{"id":"6ccef918-6401-4d06-9b30-3b74eecfd009","ts":"2026-05-20T17:26:33.524Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\DEPLOY_NOW.md","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
+{"id":"0a6846c8-f83d-4954-ac91-a7ef0eed747e","ts":"2026-05-20T17:26:38.585Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\docs\\DEPLOYMENT.md","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
+{"id":"38b0a5bb-69bf-4efe-9dd8-d6d96eca1a49","ts":"2026-05-20T17:26:44.358Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\RAILWAY_DEPLOYMENT_GUIDE.md","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
+{"id":"9af97e2a-fb42-49ff-97f1-8d808273c34c","ts":"2026-05-20T17:27:38.256Z","path":"C:\\Users\\PC Admin\\Desktop\\FAHM\\backend\\.railway-env-template","version":"1.0.0","taskID":"0afef1ae-5b9a-470b-a8ca-8451a23a3b52"}
