@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     TOP_K_RESULTS: int = 5
     CHUNK_SIZE: int = 800
     CHUNK_OVERLAP: int = 200
-    MIN_RELEVANCE_SCORE: float = 0.7
+    MIN_RELEVANCE_SCORE: float = 0.3
     
     # Database Settings
     DATABASE_URL: str = "sqlite:///./ibm_docs_llm.db"
