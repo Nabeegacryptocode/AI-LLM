@@ -1,0 +1,8 @@
+# Additional requirements for Playwright-based scraping
+# Install with: pip install -r requirements-playwright.txt
+
+# Playwright for headless browser automation
+playwright==1.40.0
+
+# Note: After installing, run: playwright install chromium
+# This downloads the Chromium browser binary needed for scraping
