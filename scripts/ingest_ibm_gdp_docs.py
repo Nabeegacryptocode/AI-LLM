@@ -1,5 +1,5 @@
 """
-Unified script to scrape and ingest IBM documentation from multiple sources
+Script to scrape and ingest IBM Guardium Data Protection (GDP) documentation
 """
 import sys
 import os
@@ -9,8 +9,6 @@ import argparse
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from scraper.ibm_cloud_scraper import IBMCloudScraper, IBM_CLOUD_SECTIONS
-from scraper.ibm_mas_scraper import IBMMAScraper, IBM_MAS_SECTIONS
 from scraper.ibm_gdp_scraper import IBMGDPScraper, IBM_GDP_SECTIONS
 from services.embedding_service import embedding_service
 import logging
@@ -22,57 +20,34 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-async def ingest_documentation(
-    source: str = "cloud",
+async def ingest_ibm_gdp_docs(
     sections: list = None,
     max_pages_per_section: int = 20,
-    namespace: str = None
+    namespace: str = "ibm-docs"
 ):
     """
-    Scrape and ingest IBM documentation
+    Scrape and ingest IBM GDP documentation
     
     Args:
-        source: Documentation source ('cloud' or 'mas')
         sections: List of section names to scrape (default: all)
         max_pages_per_section: Maximum pages per section
-        namespace: Pinecone namespace (auto-determined if None)
+        namespace: Pinecone namespace
     """
     try:
-        # Select scraper and sections based on source
-        if source == "cloud":
-            scraper_class = IBMCloudScraper
-            available_sections = IBM_CLOUD_SECTIONS
-            default_namespace = "ibm-cloud"
-            source_name = "IBM Cloud"
-        elif source == "mas":
-            scraper_class = IBMMAScraper
-            available_sections = IBM_MAS_SECTIONS
-            default_namespace = "ibm-mas"
-            source_name = "IBM Maximo Application Suite"
-        elif source == "gdp":
-            scraper_class = IBMGDPScraper
-            available_sections = IBM_GDP_SECTIONS
-            default_namespace = "ibm-docs"
-            source_name = "IBM Guardium Data Protection"
-        else:
-            raise ValueError(f"Unknown source: {source}. Use 'cloud', 'mas', or 'gdp'")
-        
-        namespace = namespace or default_namespace
-        
-        logger.info(f"Starting {source_name} documentation ingestion")
+        logger.info("Starting IBM Guardium Data Protection documentation ingestion")
         
         # Determine which sections to scrape
         if sections:
-            section_urls = {k: v for k, v in available_sections.items() if k in sections}
+            section_urls = {k: v for k, v in IBM_GDP_SECTIONS.items() if k in sections}
         else:
-            section_urls = available_sections
+            section_urls = IBM_GDP_SECTIONS
         
         logger.info(f"Scraping {len(section_urls)} sections: {list(section_urls.keys())}")
         
         all_chunks = []
         
         # Scrape each section
-        async with scraper_class() as scraper:
+        async with IBMGDPScraper() as scraper:
             for section_name, section_url in section_urls.items():
                 logger.info(f"\n{'='*60}")
                 logger.info(f"Scraping section: {section_name}")
@@ -117,7 +92,6 @@ async def ingest_documentation(
         
         logger.info(f"\n{'='*60}")
         logger.info("✅ Ingestion complete!")
-        logger.info(f"Source: {source_name}")
         logger.info(f"Documents processed: {result['documents_processed']}")
         logger.info(f"Vectors upserted: {result['vectors_upserted']}")
         logger.info(f"Namespace: {result['namespace']}")
@@ -138,7 +112,7 @@ async def ingest_documentation(
         raise
 
 
-async def test_search(query: str, namespace: str):
+async def test_search(query: str, namespace: str = "ibm-docs"):
     """
     Test search after ingestion
     
@@ -167,36 +141,13 @@ async def test_search(query: str, namespace: str):
 
 def main():
     """Main function"""
-    parser = argparse.ArgumentParser(
-        description='Ingest IBM documentation from multiple sources',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Ingest IBM GDP overview section
-  python ingest_all_docs.py --source gdp --sections overview --max-pages 20
-  
-  # Ingest IBM MAS overview and installation sections
-  python ingest_all_docs.py --source mas --sections overview installation --max-pages 30
-  
-  # Ingest all IBM GDP sections (limited pages)
-  python ingest_all_docs.py --source gdp --sections all --max-pages 10
-  
-  # Ingest and test search
-  python ingest_all_docs.py --source gdp --sections overview --test-query "What is Guardium?"
-        """
-    )
-    
-    parser.add_argument(
-        '--source',
-        choices=['cloud', 'mas', 'gdp'],
-        default='gdp',
-        help='Documentation source: cloud (IBM Cloud), mas (IBM Maximo Application Suite), or gdp (IBM Guardium Data Protection)'
-    )
+    parser = argparse.ArgumentParser(description='Ingest IBM GDP documentation')
     parser.add_argument(
         '--sections',
         nargs='+',
+        choices=list(IBM_GDP_SECTIONS.keys()) + ['all'],
         default=['overview'],
-        help='Sections to scrape (default: overview). Use "all" for all sections.'
+        help='Sections to scrape (default: overview)'
     )
     parser.add_argument(
         '--max-pages',
@@ -207,7 +158,8 @@ Examples:
     parser.add_argument(
         '--namespace',
         type=str,
-        help='Pinecone namespace (default: auto-determined based on source)'
+        default='ibm-docs',
+        help='Pinecone namespace (default: ibm-docs)'
     )
     parser.add_argument(
         '--test-query',
@@ -217,29 +169,11 @@ Examples:
     
     args = parser.parse_args()
     
-    # Validate sections based on source
-    if args.source == 'cloud':
-        available_sections = list(IBM_CLOUD_SECTIONS.keys())
-    elif args.source == 'mas':
-        available_sections = list(IBM_MAS_SECTIONS.keys())
-    else:  # gdp
-        available_sections = list(IBM_GDP_SECTIONS.keys())
-    
     # Handle 'all' sections
-    if 'all' in args.sections:
-        sections = None
-    else:
-        # Validate section names
-        invalid_sections = [s for s in args.sections if s not in available_sections]
-        if invalid_sections:
-            logger.error(f"Invalid sections for {args.source}: {invalid_sections}")
-            logger.info(f"Available sections: {available_sections}")
-            sys.exit(1)
-        sections = args.sections
+    sections = None if 'all' in args.sections else args.sections
     
     # Run ingestion
-    result = asyncio.run(ingest_documentation(
-        source=args.source,
+    result = asyncio.run(ingest_ibm_gdp_docs(
         sections=sections,
         max_pages_per_section=args.max_pages,
         namespace=args.namespace
@@ -247,15 +181,7 @@ Examples:
     
     # Test search if requested
     if args.test_query:
-        if args.namespace:
-            namespace = args.namespace
-        elif args.source == 'cloud':
-            namespace = 'ibm-cloud'
-        elif args.source == 'mas':
-            namespace = 'ibm-mas'
-        else:  # gdp
-            namespace = 'ibm-docs'
-        asyncio.run(test_search(args.test_query, namespace))
+        asyncio.run(test_search(args.test_query, args.namespace))
     
     logger.info("\n✅ Script completed successfully!")
 
