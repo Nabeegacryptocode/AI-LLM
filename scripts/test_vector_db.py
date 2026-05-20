@@ -8,8 +8,8 @@ import asyncio
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from backend.services.embedding_service import embedding_service
-from backend.services.vector_service import vector_service
+from services.embedding_service import embedding_service
+from services.vector_service import vector_service
 import logging
 
 logging.basicConfig(level=logging.INFO)

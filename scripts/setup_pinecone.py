@@ -9,7 +9,7 @@ import argparse
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from pinecone import Pinecone, ServerlessSpec
-from backend.app.config import settings
+from app.config import settings
 import logging
 
 logging.basicConfig(level=logging.INFO)

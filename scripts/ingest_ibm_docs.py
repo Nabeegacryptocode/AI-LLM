@@ -9,8 +9,8 @@ import argparse
 # Add parent directory to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from backend.scraper.ibm_cloud_scraper import IBMCloudScraper, IBM_CLOUD_SECTIONS
-from backend.services.embedding_service import embedding_service
+from scraper.ibm_cloud_scraper import IBMCloudScraper, IBM_CLOUD_SECTIONS
+from services.embedding_service import embedding_service
 import logging
 
 logging.basicConfig(
