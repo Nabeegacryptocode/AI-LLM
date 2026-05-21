@@ -28,12 +28,13 @@ class WebSearchService:
     
     def __init__(
         self,
-        project_id: str = "783867443498",
+        project_id: str = "71522359792",
         location: str = "global",
         collection_id: str = "default_collection",
-        engine_id: str = "fahm-llm_1779380839747",
+        engine_id: str = "fahm-llm_1779385233445",
         serving_config: str = "default_search",
-        service_account_key_path: Optional[str] = None
+        service_account_key_path: Optional[str] = None,
+        max_extractive_answers: int = 1
     ):
         """
         Initialize web search service
@@ -53,6 +54,7 @@ class WebSearchService:
         self.engine_id = engine_id
         self.serving_config = serving_config
         self.service_account_key_path = service_account_key_path or os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+        self.max_extractive_answers = max_extractive_answers
         
         # Build Discovery Engine API URL
         self.discovery_api_url = (
@@ -203,6 +205,11 @@ class WebSearchService:
                     "mode": "AUTO"
                 },
                 "languageCode": "en-US",
+                "contentSearchSpec": {
+                    "extractiveContentSpec": {
+                        "maxExtractiveAnswerCount": self.max_extractive_answers
+                    }
+                },
                 "userInfo": {
                     "timeZone": "America/New_York"
                 }

@@ -53,12 +53,13 @@ class Settings(BaseSettings):
     WEB_SEARCH_ENABLED: bool = True
     
     # Google Discovery Engine Settings
-    GOOGLE_PROJECT_ID: str = "783867443498"
+    GOOGLE_PROJECT_ID: str = "71522359792"
     GOOGLE_DISCOVERY_LOCATION: str = "global"
     GOOGLE_DISCOVERY_COLLECTION_ID: str = "default_collection"
-    GOOGLE_DISCOVERY_ENGINE_ID: str = "fahm-llm_1779380839747"
+    GOOGLE_DISCOVERY_ENGINE_ID: str = "fahm-llm_1779385233445"
     GOOGLE_DISCOVERY_SERVING_CONFIG: str = "default_search"
     USE_DISCOVERY_ENGINE: bool = True
+    GOOGLE_DISCOVERY_MAX_EXTRACTIVE_ANSWERS: int = 1
     
     # Google Cloud Authentication (for production)
     GOOGLE_APPLICATION_CREDENTIALS: str = ""  # Path to service account JSON key
