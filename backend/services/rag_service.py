@@ -7,6 +7,7 @@ import logging
 
 from services.embedding_service import embedding_service
 from services.llm_service import llm_service
+from services.web_search_service import web_search_service
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -55,14 +56,41 @@ class RAGService:
             )
             
             if not similar_docs:
-                logger.warning("No relevant documents found")
-                return {
-                    "answer": "I couldn't find any relevant information in the IBM documentation to answer your question. Please try rephrasing your question or ask about a different topic.",
-                    "sources": [],
-                    "conversation_id": conversation_id or "no-context",
-                    "tokens_used": 0,
-                    "retrieved_docs": 0
-                }
+                logger.warning("No relevant documents found in vector database, falling back to web search")
+                
+                # Fallback to web search
+                web_context = await web_search_service.search_and_summarize(question, max_results=3)
+                
+                if web_context:
+                    logger.info("Using web search results as context")
+                    
+                    # Generate response using web search context
+                    response = await self.llm_service.generate_response(
+                        question=question,
+                        context=web_context,
+                        conversation_id=conversation_id,
+                        max_tokens=max_tokens,
+                        conversation_history=conversation_history
+                    )
+                    
+                    return {
+                        "answer": response["answer"] + "\n\n*Note: This answer is based on web search results as no relevant information was found in the documentation.*",
+                        "sources": [{"title": "Web Search", "url": "", "source_type": "Web Search"}],
+                        "conversation_id": response["conversation_id"],
+                        "tokens_used": response["tokens_used"],
+                        "retrieved_docs": 0,
+                        "web_search_used": True
+                    }
+                else:
+                    logger.warning("Web search also returned no results")
+                    return {
+                        "answer": "I couldn't find any relevant information in the documentation or through web search to answer your question. Please try rephrasing your question or ask about a different topic.",
+                        "sources": [],
+                        "conversation_id": conversation_id or "no-context",
+                        "tokens_used": 0,
+                        "retrieved_docs": 0,
+                        "web_search_used": False
+                    }
             
             # Step 2: Build context from retrieved documents
             context = self._build_context(similar_docs)
@@ -88,7 +116,8 @@ class RAGService:
                 "sources": sources,
                 "conversation_id": response["conversation_id"],
                 "tokens_used": response["tokens_used"],
-                "retrieved_docs": len(similar_docs)
+                "retrieved_docs": len(similar_docs),
+                "web_search_used": False
             }
             
         except Exception as e:
