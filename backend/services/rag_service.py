@@ -8,6 +8,7 @@ import logging
 from services.embedding_service import embedding_service
 from services.llm_service import llm_service
 from services.web_search_service import web_search_service
+from services.dynamic_pptx_ingestion_service import dynamic_pptx_ingestion_service
 from app.config import settings
 
 logger = logging.getLogger(__name__)
@@ -56,9 +57,54 @@ class RAGService:
             )
             
             if not similar_docs:
-                logger.warning("No relevant documents found in vector database, falling back to web search")
+                logger.warning("No relevant documents found in vector database, trying Discovery Engine with dynamic ingestion")
                 
-                # Fallback to web search
+                # Try Discovery Engine search
+                discovery_results = await web_search_service.search(question, max_results=5)
+                
+                if discovery_results:
+                    logger.info(f"Found {len(discovery_results)} Discovery Engine results")
+                    
+                    # Check for PPTX files and dynamically ingest them
+                    pptx_results = [r for r in discovery_results if r.get('url', '').lower().endswith(('.pptx', '.ppt'))]
+                    
+                    if pptx_results:
+                        logger.info(f"Found {len(pptx_results)} PPTX files, attempting dynamic ingestion")
+                        
+                        # Dynamically ingest PPTX files and search again
+                        similar_docs = await dynamic_pptx_ingestion_service.get_content_from_discovery_results(
+                            discovery_results,
+                            question,
+                            namespace=namespace,
+                            top_k=settings.TOP_K_RESULTS
+                        )
+                        
+                        if similar_docs:
+                            logger.info(f"Found {len(similar_docs)} documents after dynamic ingestion")
+                            # Continue with normal RAG flow using dynamically ingested content
+                            context = self._build_context(similar_docs)
+                            
+                            response = await self.llm_service.generate_response(
+                                question=question,
+                                context=context,
+                                conversation_id=conversation_id,
+                                max_tokens=max_tokens,
+                                conversation_history=conversation_history
+                            )
+                            
+                            sources = self._format_sources(similar_docs)
+                            
+                            return {
+                                "answer": response["answer"] + "\n\n*Note: This answer is based on dynamically ingested PowerPoint presentations from Discovery Engine.*",
+                                "sources": sources,
+                                "conversation_id": response["conversation_id"],
+                                "tokens_used": response["tokens_used"],
+                                "retrieved_docs": len(similar_docs),
+                                "web_search_used": True,
+                                "dynamic_ingestion_used": True
+                            }
+                
+                # Fallback to web search summary
                 web_context = await web_search_service.search_and_summarize(question, max_results=3)
                 
                 if web_context:
