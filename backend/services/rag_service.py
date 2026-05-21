@@ -5,10 +5,10 @@ Combines vector search with LLM generation
 from typing import List, Dict, Any, Optional
 import logging
 
-from backend.services.embedding_service import embedding_service
-from backend.services.llm_service import llm_service
-from backend.services.web_search_service import web_search_service
-from backend.app.config import settings
+from services.embedding_service import embedding_service
+from services.llm_service import llm_service
+from services.web_search_service import web_search_service
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 
