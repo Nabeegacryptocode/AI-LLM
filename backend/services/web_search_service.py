@@ -9,6 +9,13 @@ import json
 import subprocess
 import os
 
+try:
+    from google.auth.transport.requests import Request
+    from google.oauth2 import service_account
+    GOOGLE_AUTH_AVAILABLE = True
+except ImportError:
+    GOOGLE_AUTH_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +28,8 @@ class WebSearchService:
         location: str = "global",
         collection_id: str = "default_collection",
         engine_id: str = "fahm-llm_1779380839747",
-        serving_config: str = "default_search"
+        serving_config: str = "default_search",
+        service_account_key_path: Optional[str] = None
     ):
         """
         Initialize web search service
@@ -32,6 +40,7 @@ class WebSearchService:
             collection_id: Collection ID
             engine_id: Engine ID
             serving_config: Serving configuration name
+            service_account_key_path: Path to service account JSON key file
         """
         # Google Discovery Engine settings
         self.project_id = project_id
@@ -39,6 +48,7 @@ class WebSearchService:
         self.collection_id = collection_id
         self.engine_id = engine_id
         self.serving_config = serving_config
+        self.service_account_key_path = service_account_key_path or os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
         
         # Build Discovery Engine API URL
         self.discovery_api_url = (
@@ -52,10 +62,82 @@ class WebSearchService:
         self.duckduckgo_api_url = "https://api.duckduckgo.com/"
         self.timeout = 30
         self.use_discovery_engine = True
+        
+        # Check authentication availability
+        self._check_auth_availability()
     
-    async def _get_gcloud_access_token(self) -> Optional[str]:
+    def _check_auth_availability(self):
+        """Check if any authentication method is available"""
+        has_gcloud = self._check_gcloud_available()
+        has_service_account = self.service_account_key_path and os.path.exists(self.service_account_key_path)
+        
+        if not has_gcloud and not has_service_account and not GOOGLE_AUTH_AVAILABLE:
+            logger.warning(
+                "No Google Cloud authentication available. "
+                "Discovery Engine will not work. Install google-auth: pip install google-auth"
+            )
+            self.use_discovery_engine = False
+    
+    def _check_gcloud_available(self) -> bool:
+        """Check if gcloud CLI is available"""
+        try:
+            result = subprocess.run(
+                ["gcloud", "--version"],
+                capture_output=True,
+                timeout=5
+            )
+            return result.returncode == 0
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            return False
+    
+    async def _get_access_token(self) -> Optional[str]:
         """
-        Get Google Cloud access token using gcloud CLI
+        Get Google Cloud access token using available authentication method
+        Tries in order: service account, gcloud CLI
+        
+        Returns:
+            Access token or None if failed
+        """
+        # Try service account first (for production)
+        if self.service_account_key_path and os.path.exists(self.service_account_key_path):
+            token = await self._get_service_account_token()
+            if token:
+                return token
+        
+        # Fall back to gcloud CLI (for development)
+        return await self._get_gcloud_token()
+    
+    async def _get_service_account_token(self) -> Optional[str]:
+        """
+        Get access token using service account credentials
+        
+        Returns:
+            Access token or None if failed
+        """
+        if not GOOGLE_AUTH_AVAILABLE:
+            logger.warning("google-auth library not installed")
+            return None
+        
+        try:
+            credentials = service_account.Credentials.from_service_account_file(
+                self.service_account_key_path,
+                scopes=['https://www.googleapis.com/auth/cloud-platform']
+            )
+            
+            # Refresh the token
+            request = Request()
+            credentials.refresh(request)
+            
+            logger.debug("Successfully obtained service account access token")
+            return credentials.token
+            
+        except Exception as e:
+            logger.error(f"Error getting service account token: {str(e)}")
+            return None
+    
+    async def _get_gcloud_token(self) -> Optional[str]:
+        """
+        Get access token using gcloud CLI
         
         Returns:
             Access token or None if failed
@@ -69,16 +151,16 @@ class WebSearchService:
             )
             if result.returncode == 0:
                 token = result.stdout.strip()
-                logger.debug("Successfully obtained gcloud access token")
+                logger.debug("Successfully obtained gcloud CLI access token")
                 return token
             else:
-                logger.warning(f"Failed to get gcloud token: {result.stderr}")
+                logger.debug(f"gcloud auth failed: {result.stderr}")
                 return None
         except FileNotFoundError:
-            logger.warning("gcloud CLI not found, falling back to DuckDuckGo")
+            logger.debug("gcloud CLI not found")
             return None
         except subprocess.TimeoutExpired:
-            logger.warning("gcloud auth timeout, falling back to DuckDuckGo")
+            logger.warning("gcloud auth timeout")
             return None
         except Exception as e:
             logger.error(f"Error getting gcloud token: {str(e)}")
@@ -101,9 +183,9 @@ class WebSearchService:
         """
         try:
             # Get access token
-            access_token = await self._get_gcloud_access_token()
+            access_token = await self._get_access_token()
             if not access_token:
-                logger.warning("No access token available, using fallback")
+                logger.info("No access token available, using DuckDuckGo fallback")
                 return []
             
             # Prepare request payload

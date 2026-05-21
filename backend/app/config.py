@@ -55,6 +55,9 @@ class Settings(BaseSettings):
     GOOGLE_DISCOVERY_SERVING_CONFIG: str = "default_search"
     USE_DISCOVERY_ENGINE: bool = True
     
+    # Google Cloud Authentication (for production)
+    GOOGLE_APPLICATION_CREDENTIALS: str = ""  # Path to service account JSON key
+    
     # Logging
     LOG_LEVEL: str = "INFO"
     SENTRY_DSN: str = ""
