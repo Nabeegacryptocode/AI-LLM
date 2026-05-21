@@ -10,7 +10,7 @@ import logging
 
 from app.config import settings
 from app.models import ErrorResponse
-from app.api import chat, health, ingest, metrics, cache
+from app.api import chat, health, ingest, metrics, cache, pdf_ingest
 from app.middleware import MonitoringMiddleware, RequestLoggingMiddleware
 
 # Configure logging
@@ -99,6 +99,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
 app.include_router(ingest.router, prefix="/api", tags=["Ingestion"])
+app.include_router(pdf_ingest.router, prefix="/api", tags=["PDF Ingestion"])
 app.include_router(metrics.router, prefix="/api", tags=["Metrics"])
 app.include_router(cache.router, prefix="/api", tags=["Cache"])
 
