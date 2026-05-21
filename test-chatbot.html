@@ -370,7 +370,8 @@
             if (sources && sources.length > 0) {
                 messageContent += '<div class="sources"><strong>📚 Sources:</strong>';
                 sources.forEach((source, index) => {
-                    messageContent += `<div class="source-item">${index + 1}. <a href="${escapeHtml(source.url)}" target="_blank">${escapeHtml(source.title)}</a> (Score: ${source.score.toFixed(2)})</div>`;
+                    const scoreText = source.score !== undefined ? ` (Score: ${source.score.toFixed(2)})` : '';
+                    messageContent += `<div class="source-item">${index + 1}. <a href="${escapeHtml(source.url)}" target="_blank">${escapeHtml(source.title)}</a>${scoreText}</div>`;
                 });
                 messageContent += '</div>';
             }
