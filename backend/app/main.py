@@ -10,7 +10,7 @@ import logging
 
 from app.config import settings
 from app.models import ErrorResponse
-from app.api import chat, health, ingest, metrics
+from app.api import chat, health, ingest, metrics, cache
 from app.middleware import MonitoringMiddleware, RequestLoggingMiddleware
 
 # Configure logging
@@ -100,6 +100,7 @@ app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
 app.include_router(ingest.router, prefix="/api", tags=["Ingestion"])
 app.include_router(metrics.router, prefix="/api", tags=["Metrics"])
+app.include_router(cache.router, prefix="/api", tags=["Cache"])
 
 
 @app.get("/")

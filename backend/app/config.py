@@ -32,8 +32,13 @@ class Settings(BaseSettings):
     PINECONE_CLOUD: str = "aws"  # Cloud provider for Pinecone serverless
     
     # Redis Settings
-    REDIS_URL: str = "redis://localhost:6379"
-    CACHE_TTL: int = 3600
+    REDIS_HOST: str = "clarion-ivoryish-dinner-46309.db.redis.io"
+    REDIS_PORT: int = 16235
+    REDIS_PASSWORD: str = "5GYPmAnDL6SmUQ66XB5MRu7hIKV3ObUJ"
+    REDIS_USER: str = "default"
+    REDIS_URL: str = "redis://default:5GYPmAnDL6SmUQ66XB5MRu7hIKV3ObUJ@clarion-ivoryish-dinner-46309.db.redis.io:16235"
+    CACHE_TTL: int = 3600  # Cache TTL in seconds (1 hour)
+    REDIS_ENABLED: bool = True
     
     # RAG Settings
     TOP_K_RESULTS: int = 5

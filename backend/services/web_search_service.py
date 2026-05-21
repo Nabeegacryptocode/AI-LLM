@@ -1,6 +1,7 @@
 """
 Web Search Service for fallback when documentation doesn't have answers
 Supports both Google Cloud Discovery Engine and DuckDuckGo fallback
+Includes Redis caching for improved performance
 """
 import aiohttp
 import logging
@@ -8,6 +9,7 @@ from typing import List, Dict, Any, Optional
 import json
 import subprocess
 import os
+import hashlib
 
 try:
     from google.auth.transport.requests import Request
@@ -15,6 +17,8 @@ try:
     GOOGLE_AUTH_AVAILABLE = True
 except ImportError:
     GOOGLE_AUTH_AVAILABLE = False
+
+from services.cache_service import cache_service
 
 logger = logging.getLogger(__name__)
 
@@ -363,18 +367,31 @@ class WebSearchService:
     async def search(
         self,
         query: str,
-        max_results: int = 5
+        max_results: int = 5,
+        use_cache: bool = True
     ) -> List[Dict[str, Any]]:
         """
         Search for information using Discovery Engine with DuckDuckGo fallback
+        Includes Redis caching for improved performance
         
         Args:
             query: Search query
             max_results: Maximum number of results
+            use_cache: Whether to use cache (default: True)
             
         Returns:
             List of search results
         """
+        # Generate cache key
+        cache_key = self._generate_cache_key(query, max_results)
+        
+        # Try to get from cache first
+        if use_cache:
+            cached_results = cache_service.get(cache_key)
+            if cached_results:
+                logger.info(f"Returning cached results for query: {query[:50]}...")
+                return cached_results
+        
         results = []
         
         # Try Google Discovery Engine first
@@ -386,7 +403,28 @@ class WebSearchService:
             logger.info("Falling back to DuckDuckGo search")
             results = await self._search_duckduckgo(query, max_results)
         
+        # Cache the results
+        if results and use_cache:
+            cache_service.set(cache_key, results, ttl=3600)  # Cache for 1 hour
+            logger.debug(f"Cached search results for query: {query[:50]}...")
+        
         return results
+    
+    def _generate_cache_key(self, query: str, max_results: int) -> str:
+        """
+        Generate cache key for search query
+        
+        Args:
+            query: Search query
+            max_results: Maximum results
+            
+        Returns:
+            Cache key
+        """
+        # Create a hash of query and params for consistent caching
+        cache_data = f"{query}:{max_results}"
+        query_hash = hashlib.md5(cache_data.encode()).hexdigest()
+        return f"search:{query_hash}"
     
     async def search_and_summarize(
         self,
