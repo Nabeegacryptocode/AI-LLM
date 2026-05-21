@@ -49,12 +49,12 @@ async def chat(
         # Format sources for response
         sources = [
             Source(
-                title=src["title"],
-                url=src["url"],
-                content=src["content"],
-                relevance_score=src["relevance_score"]
+                title=src.get("title", "Unknown"),
+                url=src.get("url", ""),
+                content=src.get("content", ""),
+                relevance_score=src.get("relevance_score", src.get("score", 0.0))
             )
-            for src in result["sources"]
+            for src in result.get("sources", [])
         ]
         
         response = ChatResponse(
