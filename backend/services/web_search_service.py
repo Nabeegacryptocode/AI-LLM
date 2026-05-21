@@ -1,29 +1,205 @@
 """
 Web Search Service for fallback when documentation doesn't have answers
+Supports both Google Cloud Discovery Engine and DuckDuckGo fallback
 """
 import aiohttp
 import logging
 from typing import List, Dict, Any, Optional
 import json
+import subprocess
+import os
 
 logger = logging.getLogger(__name__)
 
 
 class WebSearchService:
-    """Service for web search fallback"""
+    """Service for web search fallback with Google Discovery Engine"""
     
-    def __init__(self):
-        """Initialize web search service"""
-        self.search_api_url = "https://api.duckduckgo.com/"
-        self.timeout = 10
+    def __init__(
+        self,
+        project_id: str = "783867443498",
+        location: str = "global",
+        collection_id: str = "default_collection",
+        engine_id: str = "fahm-llm_1779380839747",
+        serving_config: str = "default_search"
+    ):
+        """
+        Initialize web search service
+        
+        Args:
+            project_id: Google Cloud project ID
+            location: Discovery Engine location
+            collection_id: Collection ID
+            engine_id: Engine ID
+            serving_config: Serving configuration name
+        """
+        # Google Discovery Engine settings
+        self.project_id = project_id
+        self.location = location
+        self.collection_id = collection_id
+        self.engine_id = engine_id
+        self.serving_config = serving_config
+        
+        # Build Discovery Engine API URL
+        self.discovery_api_url = (
+            f"https://discoveryengine.googleapis.com/v1alpha/"
+            f"projects/{project_id}/locations/{location}/"
+            f"collections/{collection_id}/engines/{engine_id}/"
+            f"servingConfigs/{serving_config}:search"
+        )
+        
+        # DuckDuckGo fallback
+        self.duckduckgo_api_url = "https://api.duckduckgo.com/"
+        self.timeout = 30
+        self.use_discovery_engine = True
     
-    async def search(
+    async def _get_gcloud_access_token(self) -> Optional[str]:
+        """
+        Get Google Cloud access token using gcloud CLI
+        
+        Returns:
+            Access token or None if failed
+        """
+        try:
+            result = subprocess.run(
+                ["gcloud", "auth", "print-access-token"],
+                capture_output=True,
+                text=True,
+                timeout=10
+            )
+            if result.returncode == 0:
+                token = result.stdout.strip()
+                logger.debug("Successfully obtained gcloud access token")
+                return token
+            else:
+                logger.warning(f"Failed to get gcloud token: {result.stderr}")
+                return None
+        except FileNotFoundError:
+            logger.warning("gcloud CLI not found, falling back to DuckDuckGo")
+            return None
+        except subprocess.TimeoutExpired:
+            logger.warning("gcloud auth timeout, falling back to DuckDuckGo")
+            return None
+        except Exception as e:
+            logger.error(f"Error getting gcloud token: {str(e)}")
+            return None
+    
+    async def _search_discovery_engine(
+        self,
+        query: str,
+        page_size: int = 10
+    ) -> List[Dict[str, Any]]:
+        """
+        Search using Google Cloud Discovery Engine
+        
+        Args:
+            query: Search query
+            page_size: Number of results to return
+            
+        Returns:
+            List of search results
+        """
+        try:
+            # Get access token
+            access_token = await self._get_gcloud_access_token()
+            if not access_token:
+                logger.warning("No access token available, using fallback")
+                return []
+            
+            # Prepare request payload
+            payload = {
+                "query": query,
+                "pageSize": page_size,
+                "queryExpansionSpec": {
+                    "condition": "AUTO"
+                },
+                "spellCorrectionSpec": {
+                    "mode": "AUTO"
+                },
+                "languageCode": "en-US",
+                "userInfo": {
+                    "timeZone": "America/New_York"
+                }
+            }
+            
+            headers = {
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "application/json"
+            }
+            
+            logger.info(f"Searching Discovery Engine for: {query[:100]}...")
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    self.discovery_api_url,
+                    json=payload,
+                    headers=headers,
+                    timeout=aiohttp.ClientTimeout(total=self.timeout)
+                ) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        results = self._parse_discovery_engine_results(data)
+                        logger.info(f"Found {len(results)} Discovery Engine results")
+                        return results
+                    else:
+                        error_text = await response.text()
+                        logger.warning(
+                            f"Discovery Engine search failed with status {response.status}: {error_text}"
+                        )
+                        return []
+                        
+        except Exception as e:
+            logger.error(f"Error searching Discovery Engine: {str(e)}")
+            return []
+    
+    def _parse_discovery_engine_results(
+        self,
+        data: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
+        """
+        Parse Google Discovery Engine API response
+        
+        Args:
+            data: API response data
+            
+        Returns:
+            List of parsed results
+        """
+        results = []
+        
+        # Extract results from response
+        search_results = data.get('results', [])
+        
+        for item in search_results:
+            document = item.get('document', {})
+            struct_data = document.get('structData', {})
+            derived_struct_data = document.get('derivedStructData', {})
+            
+            # Extract relevant fields
+            result = {
+                'id': document.get('id', ''),
+                'title': struct_data.get('title', derived_struct_data.get('title', 'Untitled')),
+                'content': struct_data.get('snippet', derived_struct_data.get('snippets', [''])[0] if derived_struct_data.get('snippets') else ''),
+                'url': derived_struct_data.get('link', struct_data.get('url', '')),
+                'source': 'Google Discovery Engine',
+                'score': item.get('relevanceScore', 0.0)
+            }
+            
+            # Add additional metadata if available
+            if 'extractive_answers' in derived_struct_data:
+                result['extractive_answers'] = derived_struct_data['extractive_answers']
+            
+            results.append(result)
+        
+        return results
+    
+    async def _search_duckduckgo(
         self,
         query: str,
         max_results: int = 5
     ) -> List[Dict[str, Any]]:
         """
-        Search the web for information
+        Fallback search using DuckDuckGo
         
         Args:
             query: Search query
@@ -33,9 +209,8 @@ class WebSearchService:
             List of search results
         """
         try:
-            logger.info(f"Performing web search for: {query[:100]}...")
+            logger.info(f"Using DuckDuckGo fallback for: {query[:100]}...")
             
-            # Use DuckDuckGo Instant Answer API (no API key required)
             params = {
                 'q': query,
                 'format': 'json',
@@ -45,21 +220,21 @@ class WebSearchService:
             
             async with aiohttp.ClientSession() as session:
                 async with session.get(
-                    self.search_api_url,
+                    self.duckduckgo_api_url,
                     params=params,
                     timeout=aiohttp.ClientTimeout(total=self.timeout)
                 ) as response:
                     if response.status == 200:
                         data = await response.json()
                         results = self._parse_duckduckgo_results(data, max_results)
-                        logger.info(f"Found {len(results)} web search results")
+                        logger.info(f"Found {len(results)} DuckDuckGo results")
                         return results
                     else:
-                        logger.warning(f"Web search failed with status {response.status}")
+                        logger.warning(f"DuckDuckGo search failed with status {response.status}")
                         return []
                         
         except Exception as e:
-            logger.error(f"Error performing web search: {str(e)}")
+            logger.error(f"Error performing DuckDuckGo search: {str(e)}")
             return []
     
     def _parse_duckduckgo_results(
@@ -85,7 +260,8 @@ class WebSearchService:
                 'title': data.get('Heading', 'Web Search Result'),
                 'content': data.get('Abstract', ''),
                 'url': data.get('AbstractURL', ''),
-                'source': data.get('AbstractSource', 'Web Search')
+                'source': 'DuckDuckGo',
+                'score': 1.0
             })
         
         # Get related topics
@@ -96,10 +272,39 @@ class WebSearchService:
                     'title': topic.get('Text', '')[:100],
                     'content': topic.get('Text', ''),
                     'url': topic.get('FirstURL', ''),
-                    'source': 'Web Search'
+                    'source': 'DuckDuckGo',
+                    'score': 0.8
                 })
         
         return results[:max_results]
+    
+    async def search(
+        self,
+        query: str,
+        max_results: int = 5
+    ) -> List[Dict[str, Any]]:
+        """
+        Search for information using Discovery Engine with DuckDuckGo fallback
+        
+        Args:
+            query: Search query
+            max_results: Maximum number of results
+            
+        Returns:
+            List of search results
+        """
+        results = []
+        
+        # Try Google Discovery Engine first
+        if self.use_discovery_engine:
+            results = await self._search_discovery_engine(query, max_results)
+        
+        # Fallback to DuckDuckGo if no results or Discovery Engine disabled
+        if not results:
+            logger.info("Falling back to DuckDuckGo search")
+            results = await self._search_duckduckgo(query, max_results)
+        
+        return results
     
     async def search_and_summarize(
         self,
@@ -128,6 +333,7 @@ class WebSearchService:
 Result {i}: {result['title']}
 Source: {result['source']}
 URL: {result['url']}
+Relevance Score: {result.get('score', 'N/A')}
 
 Content:
 {result['content']}
@@ -136,6 +342,16 @@ Content:
 """)
         
         return "\n".join(context_parts)
+    
+    def disable_discovery_engine(self):
+        """Disable Discovery Engine and use only DuckDuckGo"""
+        self.use_discovery_engine = False
+        logger.info("Discovery Engine disabled, using DuckDuckGo only")
+    
+    def enable_discovery_engine(self):
+        """Enable Discovery Engine"""
+        self.use_discovery_engine = True
+        logger.info("Discovery Engine enabled")
 
 
 # Global instance
