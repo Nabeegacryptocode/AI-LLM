@@ -53,10 +53,10 @@ class Settings(BaseSettings):
     WEB_SEARCH_ENABLED: bool = True
     
     # Google Discovery Engine Settings
-    GOOGLE_PROJECT_ID: str = "71522359792"
+    GOOGLE_PROJECT_ID: str = "fahmllm"
     GOOGLE_DISCOVERY_LOCATION: str = "global"
     GOOGLE_DISCOVERY_COLLECTION_ID: str = "default_collection"
-    GOOGLE_DISCOVERY_ENGINE_ID: str = "fahm-llm_1779385233445"
+    GOOGLE_DISCOVERY_ENGINE_ID: str = "fahmllm_1779391932485"
     GOOGLE_DISCOVERY_SERVING_CONFIG: str = "default_search"
     USE_DISCOVERY_ENGINE: bool = True
     GOOGLE_DISCOVERY_MAX_EXTRACTIVE_ANSWERS: int = 1

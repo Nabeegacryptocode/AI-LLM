@@ -28,10 +28,10 @@ class WebSearchService:
     
     def __init__(
         self,
-        project_id: str = "71522359792",
+        project_id: str = "fahmllm",
         location: str = "global",
         collection_id: str = "default_collection",
-        engine_id: str = "fahm-llm_1779385233445",
+        engine_id: str = "fahmllm_1779391932485",
         serving_config: str = "default_search",
         service_account_key_path: Optional[str] = None,
         max_extractive_answers: int = 1
