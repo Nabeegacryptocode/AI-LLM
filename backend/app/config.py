@@ -63,6 +63,7 @@ class Settings(BaseSettings):
     
     # Google Cloud Authentication (for production)
     GOOGLE_APPLICATION_CREDENTIALS: str = ""  # Path to service account JSON key
+    GOOGLE_APPLICATION_CREDENTIALS_JSON: str = ""  # JSON content of service account key (for Cloud Run/Railway)
     
     # Logging
     LOG_LEVEL: str = "INFO"

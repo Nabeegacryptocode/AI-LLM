@@ -33,6 +33,7 @@ class WebSearchService:
         engine_id: str = "fahmllmdiscoveryengine_1779465166335",
         serving_config: str = "default_search",
         service_account_key_path: Optional[str] = None,
+        service_account_json: Optional[str] = None,
         max_extractive_answers: int = 1
     ):
         """
@@ -45,6 +46,7 @@ class WebSearchService:
             engine_id: Engine ID
             serving_config: Serving configuration name
             service_account_key_path: Path to service account JSON key file
+            service_account_json: JSON string of service account credentials
         """
         # Google Discovery Engine settings
         self.project_id = project_id
@@ -53,6 +55,7 @@ class WebSearchService:
         self.engine_id = engine_id
         self.serving_config = serving_config
         self.service_account_key_path = service_account_key_path or os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+        self.service_account_json = service_account_json or os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
         self.max_extractive_answers = max_extractive_answers
         
         # Build Discovery Engine API URL
@@ -73,8 +76,9 @@ class WebSearchService:
         """Check if any authentication method is available"""
         has_gcloud = self._check_gcloud_available()
         has_service_account = self.service_account_key_path and os.path.exists(self.service_account_key_path)
+        has_service_account_json = bool(self.service_account_json)
         
-        if not has_gcloud and not has_service_account and not GOOGLE_AUTH_AVAILABLE:
+        if not has_gcloud and not has_service_account and not has_service_account_json and not GOOGLE_AUTH_AVAILABLE:
             logger.warning(
                 "No Google Cloud authentication available. "
                 "Discovery Engine will not work. Install google-auth: pip install google-auth"
@@ -96,12 +100,18 @@ class WebSearchService:
     async def _get_access_token(self) -> Optional[str]:
         """
         Get Google Cloud access token using available authentication method
-        Tries in order: service account, gcloud CLI
+        Tries in order: JSON credentials, service account file, gcloud CLI
         
         Returns:
             Access token or None if failed
         """
-        # Try service account first (for production)
+        # Try JSON credentials first (for Cloud Run/Railway)
+        if self.service_account_json:
+            token = await self._get_service_account_token_from_json()
+            if token:
+                return token
+        
+        # Try service account file (for local development with file)
         if self.service_account_key_path and os.path.exists(self.service_account_key_path):
             token = await self._get_service_account_token()
             if token:
@@ -110,9 +120,48 @@ class WebSearchService:
         # Fall back to gcloud CLI (for development)
         return await self._get_gcloud_token()
     
+    async def _get_service_account_token_from_json(self) -> Optional[str]:
+        """
+        Get access token using service account credentials from JSON string
+        
+        Returns:
+            Access token or None if failed
+        """
+        if not GOOGLE_AUTH_AVAILABLE:
+            logger.warning("google-auth library not installed")
+            return None
+        
+        if not self.service_account_json:
+            logger.debug("No service account JSON configured")
+            return None
+        
+        try:
+            # Parse JSON credentials
+            credentials_info = json.loads(self.service_account_json)
+            
+            # Load credentials from dict
+            credentials = service_account.Credentials.from_service_account_info(
+                credentials_info,
+                scopes=['https://www.googleapis.com/auth/cloud-platform']
+            )
+            
+            # Refresh the token
+            request = Request()
+            credentials.refresh(request)
+            
+            logger.debug("Successfully obtained service account access token from JSON")
+            return credentials.token
+            
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in service account credentials: {str(e)}")
+            return None
+        except Exception as e:
+            logger.error(f"Error getting service account token from JSON: {str(e)}")
+            return None
+    
     async def _get_service_account_token(self) -> Optional[str]:
         """
-        Get access token using service account credentials
+        Get access token using service account credentials from file
         
         Returns:
             Access token or None if failed
@@ -149,7 +198,7 @@ class WebSearchService:
             request = Request()
             credentials.refresh(request)
             
-            logger.debug("Successfully obtained service account access token")
+            logger.debug("Successfully obtained service account access token from file")
             return credentials.token
             
         except FileNotFoundError:
@@ -159,7 +208,7 @@ class WebSearchService:
             logger.error(f"Invalid JSON in service account key file at {self.service_account_key_path}: {str(e)}")
             return None
         except Exception as e:
-            logger.error(f"Error getting service account token: {str(e)}")
+            logger.error(f"Error getting service account token from file: {str(e)}")
             return None
     
     async def _get_gcloud_token(self) -> Optional[str]:
@@ -414,7 +463,25 @@ Content:
         logger.info("Discovery Engine enabled")
 
 
-# Global instance
-web_search_service = WebSearchService()
+# Global instance - initialized with settings
+def _create_web_search_service():
+    """Create web search service with settings from config"""
+    try:
+        from app.config import settings
+        return WebSearchService(
+            project_id=settings.GOOGLE_PROJECT_ID,
+            location=settings.GOOGLE_DISCOVERY_LOCATION,
+            collection_id=settings.GOOGLE_DISCOVERY_COLLECTION_ID,
+            engine_id=settings.GOOGLE_DISCOVERY_ENGINE_ID,
+            serving_config=settings.GOOGLE_DISCOVERY_SERVING_CONFIG,
+            service_account_key_path=settings.GOOGLE_APPLICATION_CREDENTIALS or None,
+            service_account_json=settings.GOOGLE_APPLICATION_CREDENTIALS_JSON or None,
+            max_extractive_answers=settings.GOOGLE_DISCOVERY_MAX_EXTRACTIVE_ANSWERS
+        )
+    except Exception as e:
+        logger.warning(f"Failed to initialize web search service with settings: {e}")
+        return WebSearchService()
+
+web_search_service = _create_web_search_service()
 
 # Made with Bob

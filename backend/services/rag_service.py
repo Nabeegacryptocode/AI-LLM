@@ -65,11 +65,11 @@ class RAGService:
                 if discovery_results:
                     logger.info(f"Found {len(discovery_results)} Discovery Engine results")
                     
-                    # Check for PPTX files and dynamically ingest them
-                    pptx_results = [r for r in discovery_results if r.get('url', '').lower().endswith(('.pptx', '.ppt'))]
+                    # Check for PPTX and PDF files and dynamically ingest them
+                    document_results = [r for r in discovery_results if r.get('url', '').lower().endswith(('.pptx', '.ppt', '.pdf'))]
                     
-                    if pptx_results:
-                        logger.info(f"Found {len(pptx_results)} PPTX files, attempting dynamic ingestion")
+                    if document_results:
+                        logger.info(f"Found {len(document_results)} documents (PPTX/PDF), attempting dynamic ingestion")
                         
                         # Dynamically ingest PPTX files and search again
                         similar_docs = await dynamic_pptx_ingestion_service.get_content_from_discovery_results(
@@ -95,7 +95,7 @@ class RAGService:
                             sources = self._format_sources(similar_docs)
                             
                             return {
-                                "answer": response["answer"] + "\n\n*Note: This answer is based on dynamically ingested PowerPoint presentations from Discovery Engine.*",
+                                "answer": response["answer"] + "\n\n*Note: This answer is based on dynamically ingested documents (PowerPoint/PDF) from Discovery Engine.*",
                                 "sources": sources,
                                 "conversation_id": response["conversation_id"],
                                 "tokens_used": response["tokens_used"],
