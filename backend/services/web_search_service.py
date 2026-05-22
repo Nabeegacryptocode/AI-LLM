@@ -1,6 +1,5 @@
 """
-Web Search Service for fallback when documentation doesn't have answers
-Supports both Google Cloud Discovery Engine and DuckDuckGo fallback
+Web Search Service using Google Cloud Discovery Engine
 Includes Redis caching for improved performance
 """
 import aiohttp
@@ -24,14 +23,14 @@ logger = logging.getLogger(__name__)
 
 
 class WebSearchService:
-    """Service for web search fallback with Google Discovery Engine"""
+    """Service for web search using Google Discovery Engine"""
     
     def __init__(
         self,
-        project_id: str = "fahmllm",
+        project_id: str = "71522359792",
         location: str = "global",
         collection_id: str = "default_collection",
-        engine_id: str = "fahmllm_1779391932485",
+        engine_id: str = "fahmllmdiscoveryengine_1779465166335",
         serving_config: str = "default_search",
         service_account_key_path: Optional[str] = None,
         max_extractive_answers: int = 1
@@ -64,8 +63,6 @@ class WebSearchService:
             f"servingConfigs/{serving_config}:search"
         )
         
-        # DuckDuckGo fallback
-        self.duckduckgo_api_url = "https://api.duckduckgo.com/"
         self.timeout = 30
         self.use_discovery_engine = True
         
@@ -310,91 +307,6 @@ class WebSearchService:
         
         return results
     
-    async def _search_duckduckgo(
-        self,
-        query: str,
-        max_results: int = 5
-    ) -> List[Dict[str, Any]]:
-        """
-        Fallback search using DuckDuckGo
-        
-        Args:
-            query: Search query
-            max_results: Maximum number of results
-            
-        Returns:
-            List of search results
-        """
-        try:
-            logger.info(f"Using DuckDuckGo fallback for: {query[:100]}...")
-            
-            params = {
-                'q': query,
-                'format': 'json',
-                'no_html': 1,
-                'skip_disambig': 1
-            }
-            
-            async with aiohttp.ClientSession() as session:
-                async with session.get(
-                    self.duckduckgo_api_url,
-                    params=params,
-                    timeout=aiohttp.ClientTimeout(total=self.timeout)
-                ) as response:
-                    if response.status == 200:
-                        data = await response.json()
-                        results = self._parse_duckduckgo_results(data, max_results)
-                        logger.info(f"Found {len(results)} DuckDuckGo results")
-                        return results
-                    else:
-                        logger.warning(f"DuckDuckGo search failed with status {response.status}")
-                        return []
-                        
-        except Exception as e:
-            logger.error(f"Error performing DuckDuckGo search: {str(e)}")
-            return []
-    
-    def _parse_duckduckgo_results(
-        self,
-        data: Dict[str, Any],
-        max_results: int
-    ) -> List[Dict[str, Any]]:
-        """
-        Parse DuckDuckGo API response
-        
-        Args:
-            data: API response data
-            max_results: Maximum results to return
-            
-        Returns:
-            List of parsed results
-        """
-        results = []
-        
-        # Get abstract (main answer)
-        if data.get('Abstract'):
-            results.append({
-                'title': data.get('Heading', 'Web Search Result'),
-                'content': data.get('Abstract', ''),
-                'url': data.get('AbstractURL', ''),
-                'source': 'DuckDuckGo',
-                'score': 1.0
-            })
-        
-        # Get related topics
-        related_topics = data.get('RelatedTopics', [])
-        for topic in related_topics[:max_results - len(results)]:
-            if isinstance(topic, dict) and 'Text' in topic:
-                results.append({
-                    'title': topic.get('Text', '')[:100],
-                    'content': topic.get('Text', ''),
-                    'url': topic.get('FirstURL', ''),
-                    'source': 'DuckDuckGo',
-                    'score': 0.8
-                })
-        
-        return results[:max_results]
-    
     async def search(
         self,
         query: str,
@@ -402,7 +314,7 @@ class WebSearchService:
         use_cache: bool = True
     ) -> List[Dict[str, Any]]:
         """
-        Search for information using Discovery Engine with DuckDuckGo fallback
+        Search for information using Google Discovery Engine
         Includes Redis caching for improved performance
         
         Args:
@@ -425,14 +337,11 @@ class WebSearchService:
         
         results = []
         
-        # Try Google Discovery Engine first
+        # Use Google Discovery Engine
         if self.use_discovery_engine:
             results = await self._search_discovery_engine(query, max_results)
-        
-        # Fallback to DuckDuckGo if no results or Discovery Engine disabled
-        if not results:
-            logger.info("Falling back to DuckDuckGo search")
-            results = await self._search_duckduckgo(query, max_results)
+        else:
+            logger.warning("Discovery Engine is disabled - no search results available")
         
         # Cache the results
         if results and use_cache:
@@ -495,9 +404,9 @@ Content:
         return "\n".join(context_parts)
     
     def disable_discovery_engine(self):
-        """Disable Discovery Engine and use only DuckDuckGo"""
+        """Disable Discovery Engine"""
         self.use_discovery_engine = False
-        logger.info("Discovery Engine disabled, using DuckDuckGo only")
+        logger.info("Discovery Engine disabled")
     
     def enable_discovery_engine(self):
         """Enable Discovery Engine"""

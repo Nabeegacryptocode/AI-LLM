@@ -26,6 +26,9 @@ The original code attempted to load service account credentials without:
 - Checking if the file contains valid JSON before loading
 - Providing specific error messages for different failure scenarios
 
+### 3. Removed DuckDuckGo Fallback
+The service now exclusively uses Google Discovery Engine for web search, with no fallback to third-party search APIs.
+
 ## Solution Implemented
 
 ### 1. Fixed Dockerfile and Created Startup Script
@@ -207,15 +210,14 @@ The service automatically falls back to `gcloud` CLI authentication if:
 - Service account authentication fails
 - `gcloud` is installed and authenticated
 
-## Fallback Behavior
+## Authentication Fallback
 
-The web search service has multiple fallback layers:
+The web search service has multiple authentication fallback layers:
 
-1. **Primary**: Google Cloud Discovery Engine with service account
-2. **Secondary**: Google Cloud Discovery Engine with gcloud CLI
-3. **Tertiary**: DuckDuckGo search API
+1. **Primary**: Service account credentials (from file or environment variable)
+2. **Secondary**: gcloud CLI authentication
 
-This ensures the service remains functional even when Google Cloud authentication is unavailable.
+If neither authentication method is available, the Discovery Engine will not work and search requests will return empty results.
 
 ## Deployment Steps
 
@@ -312,16 +314,20 @@ To prevent similar issues:
 ## Summary of Changes
 
 ### Files Modified:
-1. ✅ `backend/services/web_search_service.py` - Enhanced error handling with JSON validation
+1. ✅ `backend/services/web_search_service.py` - Enhanced error handling with JSON validation + removed DuckDuckGo
 2. ✅ `backend/Dockerfile` - Updated to use startup script instead of inline commands
 3. ✅ `backend/start.sh` - Created new startup script with proper JSON handling and validation
+4. ✅ `backend/.env` - Updated with correct Discovery Engine configuration
+5. ✅ `backend/.env.example` - Updated with correct Discovery Engine configuration
 
 ### Key Improvements:
 - **Proper JSON Handling**: Uses bash script with proper quoting to preserve JSON formatting
 - **Validation**: Validates JSON format before attempting to use credentials
 - **Clear Error Messages**: Provides actionable error messages for debugging
-- **Graceful Fallbacks**: Falls back to gcloud CLI or DuckDuckGo if credentials fail
+- **Graceful Fallbacks**: Falls back to gcloud CLI authentication if service account fails
 - **Better Logging**: Clear startup logs showing credential configuration status
+- **Discovery Engine Only**: Removed DuckDuckGo fallback - uses only Google Discovery Engine
+- **Updated Configuration**: Set correct project ID (71522359792) and engine ID (fahmllmdiscoveryengine_1779465166335)
 
 ## Status
 
@@ -329,10 +335,12 @@ To prevent similar issues:
 1. Proper JSON handling in the Dockerfile/startup script
 2. Enhanced error handling in the service code
 3. JSON validation before credential loading
-4. Clear error messages and graceful fallbacks
+4. Clear error messages and graceful authentication fallbacks
+5. Removed DuckDuckGo - now uses only Google Discovery Engine
+6. Updated to correct Discovery Engine configuration (project: 71522359792, engine: fahmllmdiscoveryengine_1779465166335)
 
 **Next Steps:**
 1. Deploy the updated code to Google Cloud Run
 2. Set the `GOOGLE_APPLICATION_CREDENTIALS_JSON` environment variable with your service account JSON
 3. Monitor logs to confirm successful credential configuration
-4. Test the web search functionality
+4. Test the Discovery Engine search functionality
