@@ -124,7 +124,25 @@ class WebSearchService:
             logger.warning("google-auth library not installed")
             return None
         
+        # Check if file exists first
+        if not self.service_account_key_path:
+            logger.debug("No service account key path configured")
+            return None
+            
+        if not os.path.exists(self.service_account_key_path):
+            logger.debug(f"Service account key file not found: {self.service_account_key_path}")
+            return None
+        
         try:
+            # Validate JSON file before attempting to load
+            with open(self.service_account_key_path, 'r', encoding='utf-8') as f:
+                try:
+                    json.load(f)
+                except json.JSONDecodeError as json_err:
+                    logger.error(f"Invalid JSON in service account key file: {json_err}")
+                    return None
+            
+            # Load credentials
             credentials = service_account.Credentials.from_service_account_file(
                 self.service_account_key_path,
                 scopes=['https://www.googleapis.com/auth/cloud-platform']
@@ -137,6 +155,12 @@ class WebSearchService:
             logger.debug("Successfully obtained service account access token")
             return credentials.token
             
+        except FileNotFoundError:
+            logger.error(f"Service account key file not found: {self.service_account_key_path}")
+            return None
+        except json.JSONDecodeError as e:
+            logger.error(f"Invalid JSON in service account key file at {self.service_account_key_path}: {str(e)}")
+            return None
         except Exception as e:
             logger.error(f"Error getting service account token: {str(e)}")
             return None
