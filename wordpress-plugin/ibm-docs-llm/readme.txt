@@ -1,9 +1,9 @@
 === IBM Docs LLM ===
-Contributors: yourusername
+Contributors: fahmtechnologypartners
 Tags: ai, chatbot, llm, ibm, documentation, rag
-Requires at least: 6.0
+Requires at least: 5.8
 Tested up to: 6.4
-Requires PHP: 8.0
+Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -35,8 +35,8 @@ IBM Docs LLM is a powerful WordPress plugin that brings AI-powered question answ
 
 = Requirements =
 
-* WordPress 6.0 or higher
-* PHP 8.0 or higher
+* WordPress 5.8 or higher
+* PHP 7.4 or higher
 * Backend API (FastAPI) deployed and configured
 * OpenAI API key
 * Pinecone vector database
