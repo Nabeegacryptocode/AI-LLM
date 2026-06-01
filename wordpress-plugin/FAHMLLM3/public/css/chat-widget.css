@@ -60,6 +60,7 @@
 
 #fahm-faris-chat-widget:not(.floating) .chat-toggle {
     display: none;
+}
 
 /* Prompt Bubble */
 .chat-prompt {
@@ -68,6 +69,7 @@
     right: 70px;
     animation: slideInPrompt 0.5s ease-out;
     z-index: 10;
+    display: none;
 }
 
 #fahm-faris-chat-widget.floating.position-bottom-left .chat-prompt {
