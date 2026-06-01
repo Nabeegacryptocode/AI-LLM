@@ -42,16 +42,10 @@
                 this.hidePrompt();
             });
             
-            // Close prompt bubble
-            $('#fahm-faris-prompt-close').on('click', (e) => {
-                e.stopPropagation();
-                this.dismissPrompt();
-            });
-            
             // Click on prompt bubble to open chat
             $('#fahm-faris-chat-prompt').on('click', () => {
                 this.toggleChat();
-                this.hidePrompt();
+                this.dismissPrompt();
             });
             
             // Minimize widget
@@ -178,7 +172,14 @@
         
         minimizeChat() {
             $('#fahm-faris-chat-container').slideUp(300);
-
+            $('#fahm-faris-chat-toggle').removeClass('active');
+        }
+        
+        closeChat() {
+            $('#fahm-faris-chat-container').slideUp(300);
+            $('#fahm-faris-chat-toggle').removeClass('active');
+        }
+        
         hidePrompt() {
             $('#fahm-faris-chat-prompt').fadeOut(300);
         }

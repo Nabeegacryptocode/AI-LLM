@@ -42,8 +42,7 @@ class Fahm_Faris_Widget {
         <div id="fahm-faris-chat-widget" class="<?php echo $widget_class; ?>">
             <div class="chat-prompt" id="fahm-faris-chat-prompt">
                 <div class="prompt-bubble">
-                    <span class="prompt-text">Got a question? Ask FAHM Faris!</span>
-                    <button class="prompt-close" id="fahm-faris-prompt-close" aria-label="Close prompt">×</button>
+                    Got a question? Ask FAHM Faris!
                 </div>
             </div>
             <div class="chat-toggle" id="fahm-faris-chat-toggle">
