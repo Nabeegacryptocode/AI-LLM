@@ -1,9 +1,9 @@
 <?php
 /**
- * API Client for IBM Docs LLM Backend
+ * API Client for Fahm Faris Backend
  */
 
-class IBM_Docs_LLM_API_Client {
+class Fahm_Faris_API_Client {
     
     /**
      * API URL
@@ -19,8 +19,8 @@ class IBM_Docs_LLM_API_Client {
      * Constructor
      */
     public function __construct($api_url = null, $api_key = null) {
-        $this->api_url = $api_url ?: get_option('ibm_docs_llm_api_url', '');
-        $this->api_key = $api_key ?: get_option('ibm_docs_llm_api_key', '');
+        $this->api_url = $api_url ?: get_option('fahm_faris_api_url', '');
+        $this->api_key = $api_key ?: get_option('fahm_faris_api_key', '');
     }
     
     /**
@@ -30,7 +30,7 @@ class IBM_Docs_LLM_API_Client {
         if (empty($this->api_url) || empty($this->api_key)) {
             return new WP_Error(
                 'missing_config',
-                __('API URL or API Key is not configured', 'ibm-docs-llm')
+                __('API URL or API Key is not configured', 'fahm-faris')
             );
         }
         
@@ -66,7 +66,7 @@ class IBM_Docs_LLM_API_Client {
             $error_data = json_decode($body, true);
             return new WP_Error(
                 'api_error',
-                $error_data['detail'] ?? __('API request failed', 'ibm-docs-llm'),
+                $error_data['detail'] ?? __('API request failed', 'fahm-faris'),
                 array('status' => $status_code)
             );
         }
@@ -76,7 +76,7 @@ class IBM_Docs_LLM_API_Client {
         if (json_last_error() !== JSON_ERROR_NONE) {
             return new WP_Error(
                 'json_error',
-                __('Failed to parse API response', 'ibm-docs-llm')
+                __('Failed to parse API response', 'fahm-faris')
             );
         }
         
@@ -90,7 +90,7 @@ class IBM_Docs_LLM_API_Client {
         if (empty($this->api_url) || empty($this->api_key)) {
             return array(
                 'success' => false,
-                'message' => __('API URL or API Key is not configured', 'ibm-docs-llm')
+                'message' => __('API URL or API Key is not configured', 'fahm-faris')
             );
         }
         
@@ -113,7 +113,7 @@ class IBM_Docs_LLM_API_Client {
         if ($status_code !== 200) {
             return array(
                 'success' => false,
-                'message' => sprintf(__('API returned status code: %d', 'ibm-docs-llm'), $status_code)
+                'message' => sprintf(__('API returned status code: %d', 'fahm-faris'), $status_code)
             );
         }
         
@@ -122,7 +122,7 @@ class IBM_Docs_LLM_API_Client {
         
         return array(
             'success' => true,
-            'message' => __('Connection successful!', 'ibm-docs-llm'),
+            'message' => __('Connection successful!', 'fahm-faris'),
             'data' => $data
         );
     }
@@ -134,7 +134,7 @@ class IBM_Docs_LLM_API_Client {
         if (empty($this->api_url) || empty($this->api_key)) {
             return new WP_Error(
                 'missing_config',
-                __('API URL or API Key is not configured', 'ibm-docs-llm')
+                __('API URL or API Key is not configured', 'fahm-faris')
             );
         }
         
@@ -158,7 +158,7 @@ class IBM_Docs_LLM_API_Client {
         if ($status_code !== 200) {
             return new WP_Error(
                 'api_error',
-                __('Failed to get statistics', 'ibm-docs-llm')
+                __('Failed to get statistics', 'fahm-faris')
             );
         }
         

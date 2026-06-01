@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ibm-docs-llm-api
+    name: fahm-faris-api
     env: python
     region: oregon
     plan: starter
@@ -19,7 +19,7 @@ services:
       - key: PINECONE_ENVIRONMENT
         value: us-west1-gcp
       - key: PINECONE_INDEX_NAME
-        value: ibm-docs
+        value: fahm-faris
       - key: PINECONE_CLOUD
         value: aws
       
@@ -61,7 +61,7 @@ services:
       
       # Optional: Database (SQLite by default, or use Render PostgreSQL)
       - key: DATABASE_URL
-        value: sqlite:///./ibm_docs_llm.db
+        value: sqlite:///./fahm_faris.db
       
       # Optional: Logging
       - key: LOG_LEVEL

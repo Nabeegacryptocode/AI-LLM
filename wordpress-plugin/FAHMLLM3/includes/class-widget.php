@@ -1,9 +1,9 @@
 <?php
 /**
- * Widget class for IBM Docs LLM
+ * Widget class for Fahm Faris
  */
 
-class IBM_Docs_LLM_Widget {
+class Fahm_Faris_Widget {
     
     /**
      * Initialize widget
@@ -16,14 +16,14 @@ class IBM_Docs_LLM_Widget {
      * Render floating widget
      */
     public static function render_floating_widget() {
-        if (!get_option('ibm_docs_llm_enable_widget', false)) {
+        if (!get_option('fahm_faris_enable_widget', false)) {
             return;
         }
         
-        $title = get_option('ibm_docs_llm_widget_title', __('Ask IBM Docs', 'ibm-docs-llm'));
-        $placeholder = get_option('ibm_docs_llm_placeholder', __('Ask a question about IBM...', 'ibm-docs-llm'));
-        $theme = get_option('ibm_docs_llm_theme', 'light');
-        $position = get_option('ibm_docs_llm_position', 'bottom-right');
+        $title = get_option('fahm_faris_widget_title', __('FAHM Faris', 'fahm-faris'));
+        $placeholder = get_option('fahm_faris_placeholder', __('Type your question here...', 'fahm-faris'));
+        $theme = get_option('fahm_faris_theme', 'light');
+        $position = get_option('fahm_faris_position', 'bottom-right');
         
         self::render_widget_html($title, $placeholder, $theme, $position, true);
     }
@@ -32,30 +32,42 @@ class IBM_Docs_LLM_Widget {
      * Render widget HTML
      */
     public static function render_widget_html($title, $placeholder, $theme = 'light', $position = 'bottom-right', $floating = false) {
-        $widget_class = 'ibm-docs-chat-widget';
+        $widget_class = 'fahm-faris-chat-widget';
         $widget_class .= ' theme-' . esc_attr($theme);
         $widget_class .= ' position-' . esc_attr($position);
         if ($floating) {
             $widget_class .= ' floating';
         }
         ?>
-        <div id="ibm-docs-chat-widget" class="<?php echo $widget_class; ?>">
-            <div class="chat-toggle" id="ibm-docs-chat-toggle">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
+        <div id="fahm-faris-chat-widget" class="<?php echo $widget_class; ?>">
+            <div class="chat-prompt" id="fahm-faris-chat-prompt">
+                <div class="prompt-bubble">
+                    <span class="prompt-text">Got a question? Ask FAHM Faris!</span>
+                    <button class="prompt-close" id="fahm-faris-prompt-close" aria-label="Close prompt">×</button>
+                </div>
+            </div>
+            <div class="chat-toggle" id="fahm-faris-chat-toggle">
+                <div class="robot-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect>
+                        <circle cx="12" cy="5" r="2"></circle>
+                        <path d="M12 7v4"></path>
+                        <line x1="8" y1="16" x2="8" y2="16"></line>
+                        <line x1="16" y1="16" x2="16" y2="16"></line>
+                    </svg>
+                </div>
             </div>
             
-            <div class="chat-container" id="ibm-docs-chat-container">
+            <div class="chat-container" id="fahm-faris-chat-container">
                 <div class="chat-header">
                     <h3><?php echo esc_html($title); ?></h3>
                     <div class="chat-actions">
-                        <button class="chat-minimize" id="ibm-docs-chat-minimize" title="<?php esc_attr_e('Minimize', 'ibm-docs-llm'); ?>">
+                        <button class="chat-minimize" id="fahm-faris-chat-minimize" title="<?php esc_attr_e('Minimize', 'fahm-faris'); ?>">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
                         </button>
-                        <button class="chat-close" id="ibm-docs-chat-close" title="<?php esc_attr_e('Close', 'ibm-docs-llm'); ?>">
+                        <button class="chat-close" id="fahm-faris-chat-close" title="<?php esc_attr_e('Close', 'fahm-faris'); ?>">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -64,15 +76,15 @@ class IBM_Docs_LLM_Widget {
                     </div>
                 </div>
                 
-                <div class="chat-messages" id="ibm-docs-chat-messages">
+                <div class="chat-messages" id="fahm-faris-chat-messages">
                     <div class="chat-message chat-message-assistant">
                         <div class="message-content">
-                            <?php _e('Hello! I can help you with questions about IBM documentation. What would you like to know?', 'ibm-docs-llm'); ?>
+                            <?php _e('Hello! I can help you with questions about IBM documentation. What would you like to know?', 'fahm-faris'); ?>
                         </div>
                     </div>
                 </div>
                 
-                <div class="chat-loading" id="ibm-docs-chat-loading" style="display: none;">
+                <div class="chat-loading" id="fahm-faris-chat-loading" style="display: none;">
                     <div class="loading-dots">
                         <span></span>
                         <span></span>
@@ -81,14 +93,14 @@ class IBM_Docs_LLM_Widget {
                 </div>
                 
                 <div class="chat-input-container">
-                    <form id="ibm-docs-chat-form">
+                    <form id="fahm-faris-chat-form">
                         <input 
                             type="text" 
-                            id="ibm-docs-chat-input" 
+                            id="fahm-faris-chat-input" 
                             class="chat-input" 
                             placeholder="<?php echo esc_attr($placeholder); ?>"
                             autocomplete="off">
-                        <button type="submit" class="chat-submit" id="ibm-docs-chat-submit">
+                        <button type="submit" class="chat-submit" id="fahm-faris-chat-submit">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="22" y1="2" x2="11" y2="13"></line>
                                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>

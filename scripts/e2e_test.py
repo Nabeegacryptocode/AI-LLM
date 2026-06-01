@@ -1,5 +1,5 @@
 """
-End-to-end test script for IBM Docs LLM system
+End-to-end test script for Fahm Faris system
 Tests the complete workflow from deployment to query
 """
 import requests
@@ -379,7 +379,7 @@ class E2ETest:
     
     def run_all_tests(self):
         """Run all tests"""
-        self.print_header("IBM Docs LLM - End-to-End Test Suite")
+        self.print_header("Fahm Faris - End-to-End Test Suite")
         
         print(f"API URL: {self.api_url}")
         print(f"Testing started at: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -437,7 +437,7 @@ def main():
     """Main entry point"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Run end-to-end tests for IBM Docs LLM")
+    parser = argparse.ArgumentParser(description="Run end-to-end tests for Fahm Faris")
     parser.add_argument("--api-url", required=True, help="API URL (e.g., https://api.example.com)")
     parser.add_argument("--api-key", required=True, help="API key for authentication")
     

@@ -1,31 +1,31 @@
-/* IBM Docs LLM Chat Widget Styles */
+/* Fahm Faris Chat Widget Styles */
 
-#ibm-docs-chat-widget {
+#fahm-faris-chat-widget {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     z-index: 9999;
 }
 
 /* Floating Widget */
-#ibm-docs-chat-widget.floating {
+#fahm-faris-chat-widget.floating {
     position: fixed;
 }
 
-#ibm-docs-chat-widget.floating.position-bottom-right {
+#fahm-faris-chat-widget.floating.position-bottom-right {
     bottom: 20px;
     right: 20px;
 }
 
-#ibm-docs-chat-widget.floating.position-bottom-left {
+#fahm-faris-chat-widget.floating.position-bottom-left {
     bottom: 20px;
     left: 20px;
 }
 
-#ibm-docs-chat-widget.floating.position-top-right {
+#fahm-faris-chat-widget.floating.position-top-right {
     top: 20px;
     right: 20px;
 }
 
-#ibm-docs-chat-widget.floating.position-top-left {
+#fahm-faris-chat-widget.floating.position-top-left {
     top: 20px;
     left: 20px;
 }
@@ -54,12 +54,144 @@
     background: #0353e9;
 }
 
-#ibm-docs-chat-widget.floating .chat-toggle {
+#fahm-faris-chat-widget.floating .chat-toggle {
     display: flex;
 }
 
-#ibm-docs-chat-widget:not(.floating) .chat-toggle {
+#fahm-faris-chat-widget:not(.floating) .chat-toggle {
     display: none;
+
+/* Prompt Bubble */
+.chat-prompt {
+    position: absolute;
+    bottom: 70px;
+    right: 70px;
+    animation: slideInPrompt 0.5s ease-out;
+    z-index: 10;
+}
+
+#fahm-faris-chat-widget.floating.position-bottom-left .chat-prompt {
+    right: auto;
+    left: 70px;
+}
+
+#fahm-faris-chat-widget.floating.position-top-right .chat-prompt {
+    bottom: auto;
+    top: 70px;
+}
+
+#fahm-faris-chat-widget.floating.position-top-left .chat-prompt {
+    bottom: auto;
+    top: 70px;
+    right: auto;
+    left: 70px;
+}
+
+.prompt-bubble {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 250px;
+    position: relative;
+}
+
+.prompt-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid white;
+}
+
+#fahm-faris-chat-widget.floating.position-bottom-left .prompt-bubble::after {
+    right: auto;
+    left: 20px;
+}
+
+#fahm-faris-chat-widget.floating.position-top-right .prompt-bubble::after,
+#fahm-faris-chat-widget.floating.position-top-left .prompt-bubble::after {
+    bottom: auto;
+    top: -8px;
+    border-top: none;
+    border-bottom: 8px solid white;
+}
+
+.prompt-text {
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.prompt-close {
+    background: transparent;
+    border: none;
+    color: #999;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.prompt-close:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+@keyframes slideInPrompt {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-prompt.hidden {
+    display: none;
+}
+
+/* Robot Icon Animation */
+.robot-icon {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.chat-toggle:hover .robot-icon {
+    animation: none;
+    transform: scale(1.1);
+}
+
+
 }
 
 /* Chat Container */
@@ -74,13 +206,21 @@
     overflow: hidden;
 }
 
-#ibm-docs-chat-widget.floating .chat-container {
+#fahm-faris-chat-widget.floating.position-bottom-right .chat-container,
+#fahm-faris-chat-widget.floating.position-top-right .chat-container {
     position: absolute;
     bottom: 80px;
     right: 0;
 }
 
-#ibm-docs-chat-widget:not(.floating) .chat-container {
+#fahm-faris-chat-widget.floating.position-bottom-left .chat-container,
+#fahm-faris-chat-widget.floating.position-top-left .chat-container {
+    position: absolute;
+    bottom: 80px;
+    left: 80px;
+}
+
+#fahm-faris-chat-widget:not(.floating) .chat-container {
     width: 100%;
     height: 100%;
 }
@@ -172,44 +312,7 @@
     border-radius: 8px;
 }
 
-/* Message Sources */
-.message-sources {
-    margin-top: 12px;
-    padding: 12px;
-    background: #f4f4f4;
-    border-radius: 8px;
-    font-size: 13px;
-}
 
-.message-sources strong {
-    display: block;
-    margin-bottom: 8px;
-    color: #161616;
-}
-
-.message-sources ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.message-sources li {
-    margin-bottom: 6px;
-}
-
-.message-sources a {
-    color: #0f62fe;
-    text-decoration: none;
-}
-
-.message-sources a:hover {
-    text-decoration: underline;
-}
-
-.source-score {
-    color: #697077;
-    font-size: 12px;
-    margin-left: 4px;
-}
 
 /* Loading Indicator */
 .chat-loading {
@@ -297,49 +400,43 @@
 }
 
 /* Dark Theme */
-#ibm-docs-chat-widget.theme-dark .chat-container {
+#fahm-faris-chat-widget.theme-dark .chat-container {
     background: #262626;
 }
 
-#ibm-docs-chat-widget.theme-dark .chat-header {
+#fahm-faris-chat-widget.theme-dark .chat-header {
     background: #161616;
 }
 
-#ibm-docs-chat-widget.theme-dark .chat-messages {
+#fahm-faris-chat-widget.theme-dark .chat-messages {
     background: #262626;
 }
 
-#ibm-docs-chat-widget.theme-dark .chat-message-assistant .message-content {
+#fahm-faris-chat-widget.theme-dark .chat-message-assistant .message-content {
     background: #393939;
     color: #f4f4f4;
 }
 
-#ibm-docs-chat-widget.theme-dark .message-sources {
-    background: #393939;
-}
 
-#ibm-docs-chat-widget.theme-dark .message-sources strong {
-    color: #f4f4f4;
-}
 
-#ibm-docs-chat-widget.theme-dark .chat-input-container {
+#fahm-faris-chat-widget.theme-dark .chat-input-container {
     background: #262626;
     border-top-color: #393939;
 }
 
-#ibm-docs-chat-widget.theme-dark .chat-input {
+#fahm-faris-chat-widget.theme-dark .chat-input {
     background: #393939;
     border-color: #525252;
     color: #f4f4f4;
 }
 
-#ibm-docs-chat-widget.theme-dark .chat-input:focus {
+#fahm-faris-chat-widget.theme-dark .chat-input:focus {
     border-color: #0f62fe;
 }
 
 /* Responsive */
 @media (max-width: 480px) {
-    #ibm-docs-chat-widget.floating .chat-container {
+    #fahm-faris-chat-widget.floating .chat-container {
         width: calc(100vw - 40px);
         height: calc(100vh - 140px);
         bottom: 80px;
@@ -347,8 +444,8 @@
         left: 20px;
     }
     
-    #ibm-docs-chat-widget.floating.position-bottom-left .chat-container,
-    #ibm-docs-chat-widget.floating.position-top-left .chat-container {
+    #fahm-faris-chat-widget.floating.position-bottom-left .chat-container,
+    #fahm-faris-chat-widget.floating.position-top-left .chat-container {
         right: 20px;
     }
 }
@@ -371,11 +468,11 @@
     background: #a8a8a8;
 }
 
-#ibm-docs-chat-widget.theme-dark .chat-messages::-webkit-scrollbar-thumb {
+#fahm-faris-chat-widget.theme-dark .chat-messages::-webkit-scrollbar-thumb {
     background: #525252;
 }
 
-#ibm-docs-chat-widget.theme-dark .chat-messages::-webkit-scrollbar-thumb:hover {
+#fahm-faris-chat-widget.theme-dark .chat-messages::-webkit-scrollbar-thumb:hover {
     background: #6f6f6f;
 }
 

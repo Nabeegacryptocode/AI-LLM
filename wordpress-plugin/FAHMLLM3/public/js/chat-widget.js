@@ -1,7 +1,7 @@
 (function($) {
     'use strict';
     
-    class IBMDocsChat {
+    class FahmFarisChat {
         constructor() {
             this.conversationId = null;
             this.isLoading = false;
@@ -15,36 +15,57 @@
         
         initWidget() {
             // Set initial state
-            const $widget = $('#ibm-docs-chat-widget');
+            const $widget = $('#fahm-faris-chat-widget');
             if ($widget.hasClass('floating')) {
                 $widget.find('.chat-container').hide();
+                
+                // Show prompt bubble after 2 seconds if not dismissed before
+                setTimeout(() => {
+                    const promptDismissed = localStorage.getItem('fahmFarisPromptDismissed');
+                    if (!promptDismissed) {
+                        $('#fahm-faris-chat-prompt').fadeIn(300);
+                    }
+                }, 2000);
             }
         }
         
         bindEvents() {
             // Form submission
-            $('#ibm-docs-chat-form').on('submit', (e) => {
+            $('#fahm-faris-chat-form').on('submit', (e) => {
                 e.preventDefault();
                 this.sendMessage();
             });
             
             // Toggle widget
-            $('#ibm-docs-chat-toggle').on('click', () => {
+            $('#fahm-faris-chat-toggle').on('click', () => {
                 this.toggleChat();
+                this.hidePrompt();
+            });
+            
+            // Close prompt bubble
+            $('#fahm-faris-prompt-close').on('click', (e) => {
+                e.stopPropagation();
+                this.dismissPrompt();
+            });
+            
+            // Click on prompt bubble to open chat
+            $('#fahm-faris-chat-prompt').on('click', () => {
+                this.toggleChat();
+                this.hidePrompt();
             });
             
             // Minimize widget
-            $('#ibm-docs-chat-minimize').on('click', () => {
+            $('#fahm-faris-chat-minimize').on('click', () => {
                 this.minimizeChat();
             });
             
             // Close widget
-            $('#ibm-docs-chat-close').on('click', () => {
+            $('#fahm-faris-chat-close').on('click', () => {
                 this.closeChat();
             });
             
             // Enter key to send
-            $('#ibm-docs-chat-input').on('keypress', (e) => {
+            $('#fahm-faris-chat-input').on('keypress', (e) => {
                 if (e.which === 13 && !e.shiftKey) {
                     e.preventDefault();
                     this.sendMessage();
@@ -55,7 +76,7 @@
         async sendMessage() {
             if (this.isLoading) return;
             
-            const $input = $('#ibm-docs-chat-input');
+            const $input = $('#fahm-faris-chat-input');
             const question = $input.val().trim();
             
             if (!question) return;
@@ -75,12 +96,12 @@
                     this.conversationId = data.conversation_id;
                     this.displayMessage(data.answer, 'assistant', data.sources);
                 } else {
-                    this.displayError(response.data.message || ibmDocsLLM.strings.error);
+                    this.displayError(response.data.message || fahmFaris.strings.error);
                 }
                 
             } catch (error) {
                 console.error('Chat error:', error);
-                this.displayError(ibmDocsLLM.strings.error);
+                this.displayError(fahmFaris.strings.error);
             } finally {
                 this.isLoading = false;
                 this.hideLoading();
@@ -90,11 +111,11 @@
         async callAPI(question) {
             // Use WordPress REST API
             const response = await $.ajax({
-                url: ibmDocsLLM.ajaxUrl,
+                url: fahmFaris.ajaxUrl,
                 method: 'POST',
                 data: {
-                    action: 'ibm_docs_llm_chat',
-                    nonce: ibmDocsLLM.nonce,
+                    action: 'fahm_faris_chat',
+                    nonce: fahmFaris.nonce,
                     question: question,
                     conversation_id: this.conversationId
                 }
@@ -104,12 +125,11 @@
         }
         
         displayMessage(text, role, sources = null) {
-            const $messages = $('#ibm-docs-chat-messages');
+            const $messages = $('#fahm-faris-chat-messages');
             
             const messageHtml = `
                 <div class="chat-message chat-message-${role}">
                     <div class="message-content">${this.escapeHtml(text)}</div>
-                    ${sources ? this.renderSources(sources) : ''}
                 </div>
             `;
             
@@ -117,30 +137,10 @@
             this.scrollToBottom();
         }
         
-        renderSources(sources) {
-            if (!sources || sources.length === 0) return '';
-            
-            let html = `<div class="message-sources">
-                <strong>${ibmDocsLLM.strings.sources}</strong>
-                <ul>`;
-            
-            sources.forEach(source => {
-                html += `
-                    <li>
-                        <a href="${this.escapeHtml(source.url)}" target="_blank" rel="noopener">
-                            ${this.escapeHtml(source.title)}
-                        </a>
-                        <span class="source-score">(${(source.relevance_score * 100).toFixed(0)}%)</span>
-                    </li>
-                `;
-            });
-            
-            html += '</ul></div>';
-            return html;
-        }
+
         
         displayError(message) {
-            const $messages = $('#ibm-docs-chat-messages');
+            const $messages = $('#fahm-faris-chat-messages');
             
             const errorHtml = `
                 <div class="chat-message chat-message-error">
@@ -153,18 +153,18 @@
         }
         
         showLoading() {
-            $('#ibm-docs-chat-loading').show();
-            $('#ibm-docs-chat-submit').prop('disabled', true);
+            $('#fahm-faris-chat-loading').show();
+            $('#fahm-faris-chat-submit').prop('disabled', true);
         }
         
         hideLoading() {
-            $('#ibm-docs-chat-loading').hide();
-            $('#ibm-docs-chat-submit').prop('disabled', false);
+            $('#fahm-faris-chat-loading').hide();
+            $('#fahm-faris-chat-submit').prop('disabled', false);
         }
         
         toggleChat() {
-            const $container = $('#ibm-docs-chat-container');
-            const $toggle = $('#ibm-docs-chat-toggle');
+            const $container = $('#fahm-faris-chat-container');
+            const $toggle = $('#fahm-faris-chat-toggle');
             
             if ($container.is(':visible')) {
                 $container.slideUp(300);
@@ -172,13 +172,24 @@
             } else {
                 $container.slideDown(300);
                 $toggle.addClass('active');
-                $('#ibm-docs-chat-input').focus();
+                $('#fahm-faris-chat-input').focus();
             }
         }
         
         minimizeChat() {
-            $('#ibm-docs-chat-container').slideUp(300);
-            $('#ibm-docs-chat-toggle').removeClass('active');
+            $('#fahm-faris-chat-container').slideUp(300);
+
+        hidePrompt() {
+            $('#fahm-faris-chat-prompt').fadeOut(300);
+        }
+        
+        dismissPrompt() {
+            this.hidePrompt();
+            localStorage.setItem('fahmFarisPromptDismissed', 'true');
+        }
+        
+
+            $('#fahm-faris-chat-toggle').removeClass('active');
         }
         
         closeChat() {
@@ -186,7 +197,7 @@
         }
         
         scrollToBottom() {
-            const $messages = $('#ibm-docs-chat-messages');
+            const $messages = $('#fahm-faris-chat-messages');
             $messages.animate({
                 scrollTop: $messages[0].scrollHeight
             }, 300);
@@ -201,8 +212,8 @@
     
     // Initialize when document is ready
     $(document).ready(function() {
-        if ($('#ibm-docs-chat-widget').length) {
-            new IBMDocsChat();
+        if ($('#fahm-faris-chat-widget').length) {
+            new FahmFarisChat();
         }
     });
     

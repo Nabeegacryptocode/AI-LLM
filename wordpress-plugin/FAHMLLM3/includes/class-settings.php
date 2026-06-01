@@ -1,9 +1,9 @@
 <?php
 /**
- * Settings page for IBM Docs LLM
+ * Settings page for Fahm Faris
  */
 
-class IBM_Docs_LLM_Settings {
+class Fahm_Faris_Settings {
     
     /**
      * Initialize settings
@@ -31,43 +31,43 @@ class IBM_Docs_LLM_Settings {
      */
     public static function register_settings() {
         // API Settings
-        register_setting('ibm_docs_llm_settings', 'ibm_docs_llm_api_url', array(
+        register_setting('fahm_faris_settings', 'fahm_faris_api_url', array(
             'type' => 'string',
             'sanitize_callback' => 'esc_url_raw',
             'default' => ''
         ));
         
-        register_setting('ibm_docs_llm_settings', 'ibm_docs_llm_api_key', array(
+        register_setting('fahm_faris_settings', 'fahm_faris_api_key', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'default' => ''
         ));
         
         // Widget Settings
-        register_setting('ibm_docs_llm_settings', 'ibm_docs_llm_enable_widget', array(
+        register_setting('fahm_faris_settings', 'fahm_faris_enable_widget', array(
             'type' => 'boolean',
             'default' => false
         ));
         
-        register_setting('ibm_docs_llm_settings', 'ibm_docs_llm_widget_title', array(
+        register_setting('fahm_faris_settings', 'fahm_faris_widget_title', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
-            'default' => __('Ask IBM Docs', 'ibm-docs-llm')
+            'default' => __('FAHM Faris', 'fahm-faris')
         ));
         
-        register_setting('ibm_docs_llm_settings', 'ibm_docs_llm_placeholder', array(
+        register_setting('fahm_faris_settings', 'fahm_faris_placeholder', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
-            'default' => __('Ask a question about IBM...', 'ibm-docs-llm')
+            'default' => __('Ask a question about IBM...', 'fahm-faris')
         ));
         
-        register_setting('ibm_docs_llm_settings', 'ibm_docs_llm_theme', array(
+        register_setting('fahm_faris_settings', 'fahm_faris_theme', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'default' => 'light'
         ));
         
-        register_setting('ibm_docs_llm_settings', 'ibm_docs_llm_position', array(
+        register_setting('fahm_faris_settings', 'fahm_faris_position', array(
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'default' => 'bottom-right'
@@ -75,74 +75,74 @@ class IBM_Docs_LLM_Settings {
         
         // Add settings sections
         add_settings_section(
-            'ibm_docs_llm_api_section',
-            __('API Configuration', 'ibm-docs-llm'),
+            'fahm_faris_api_section',
+            __('API Configuration', 'fahm-faris'),
             array(__CLASS__, 'render_api_section'),
-            'ibm-docs-llm'
+            'fahm-faris'
         );
         
         add_settings_section(
-            'ibm_docs_llm_widget_section',
-            __('Widget Settings', 'ibm-docs-llm'),
+            'fahm_faris_widget_section',
+            __('Widget Settings', 'fahm-faris'),
             array(__CLASS__, 'render_widget_section'),
-            'ibm-docs-llm'
+            'fahm-faris'
         );
         
         // Add settings fields
         add_settings_field(
-            'ibm_docs_llm_api_url',
-            __('API URL', 'ibm-docs-llm'),
+            'fahm_faris_api_url',
+            __('API URL', 'fahm-faris'),
             array(__CLASS__, 'render_api_url_field'),
-            'ibm-docs-llm',
-            'ibm_docs_llm_api_section'
+            'fahm-faris',
+            'fahm_faris_api_section'
         );
         
         add_settings_field(
-            'ibm_docs_llm_api_key',
-            __('API Key', 'ibm-docs-llm'),
+            'fahm_faris_api_key',
+            __('API Key', 'fahm-faris'),
             array(__CLASS__, 'render_api_key_field'),
-            'ibm-docs-llm',
-            'ibm_docs_llm_api_section'
+            'fahm-faris',
+            'fahm_faris_api_section'
         );
         
         add_settings_field(
-            'ibm_docs_llm_enable_widget',
-            __('Enable Floating Widget', 'ibm-docs-llm'),
+            'fahm_faris_enable_widget',
+            __('Enable Floating Widget', 'fahm-faris'),
             array(__CLASS__, 'render_enable_widget_field'),
-            'ibm-docs-llm',
-            'ibm_docs_llm_widget_section'
+            'fahm-faris',
+            'fahm_faris_widget_section'
         );
         
         add_settings_field(
-            'ibm_docs_llm_widget_title',
-            __('Widget Title', 'ibm-docs-llm'),
+            'fahm_faris_widget_title',
+            __('Widget Title', 'fahm-faris'),
             array(__CLASS__, 'render_widget_title_field'),
-            'ibm-docs-llm',
-            'ibm_docs_llm_widget_section'
+            'fahm-faris',
+            'fahm_faris_widget_section'
         );
         
         add_settings_field(
-            'ibm_docs_llm_placeholder',
-            __('Input Placeholder', 'ibm-docs-llm'),
+            'fahm_faris_placeholder',
+            __('Input Placeholder', 'fahm-faris'),
             array(__CLASS__, 'render_placeholder_field'),
-            'ibm-docs-llm',
-            'ibm_docs_llm_widget_section'
+            'fahm-faris',
+            'fahm_faris_widget_section'
         );
         
         add_settings_field(
-            'ibm_docs_llm_theme',
-            __('Theme', 'ibm-docs-llm'),
+            'fahm_faris_theme',
+            __('Theme', 'fahm-faris'),
             array(__CLASS__, 'render_theme_field'),
-            'ibm-docs-llm',
-            'ibm_docs_llm_widget_section'
+            'fahm-faris',
+            'fahm_faris_widget_section'
         );
         
         add_settings_field(
-            'ibm_docs_llm_position',
-            __('Widget Position', 'ibm-docs-llm'),
+            'fahm_faris_position',
+            __('Widget Position', 'fahm-faris'),
             array(__CLASS__, 'render_position_field'),
-            'ibm-docs-llm',
-            'ibm_docs_llm_widget_section'
+            'fahm-faris',
+            'fahm_faris_widget_section'
         );
     }
     
@@ -156,21 +156,21 @@ class IBM_Docs_LLM_Settings {
         
         // Handle test connection
         if (isset($_POST['test_connection'])) {
-            check_admin_referer('ibm_docs_llm_test_connection');
-            $api_client = new IBM_Docs_LLM_API_Client();
+            check_admin_referer('fahm_faris_test_connection');
+            $api_client = new Fahm_Faris_API_Client();
             $result = $api_client->test_connection();
             
             if ($result['success']) {
                 add_settings_error(
-                    'ibm_docs_llm_messages',
-                    'ibm_docs_llm_message',
+                    'fahm_faris_messages',
+                    'fahm_faris_message',
                     $result['message'],
                     'success'
                 );
             } else {
                 add_settings_error(
-                    'ibm_docs_llm_messages',
-                    'ibm_docs_llm_message',
+                    'fahm_faris_messages',
+                    'fahm_faris_message',
                     $result['message'],
                     'error'
                 );
@@ -181,36 +181,36 @@ class IBM_Docs_LLM_Settings {
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             
-            <?php settings_errors('ibm_docs_llm_messages'); ?>
+            <?php settings_errors('fahm_faris_messages'); ?>
             
             <form action="options.php" method="post">
                 <?php
-                settings_fields('ibm_docs_llm_settings');
-                do_settings_sections('ibm-docs-llm');
-                submit_button(__('Save Settings', 'ibm-docs-llm'));
+                settings_fields('fahm_faris_settings');
+                do_settings_sections('fahm-faris');
+                submit_button(__('Save Settings', 'fahm-faris'));
                 ?>
             </form>
             
             <form method="post" style="margin-top: 20px;">
-                <?php wp_nonce_field('ibm_docs_llm_test_connection'); ?>
-                <?php submit_button(__('Test API Connection', 'ibm-docs-llm'), 'secondary', 'test_connection', false); ?>
+                <?php wp_nonce_field('fahm_faris_test_connection'); ?>
+                <?php submit_button(__('Test API Connection', 'fahm-faris'), 'secondary', 'test_connection', false); ?>
             </form>
             
             <div class="card" style="margin-top: 20px;">
-                <h2><?php _e('Usage Instructions', 'ibm-docs-llm'); ?></h2>
-                <h3><?php _e('Shortcode', 'ibm-docs-llm'); ?></h3>
-                <p><?php _e('Add the chat widget to any page or post using:', 'ibm-docs-llm'); ?></p>
-                <code>[ibm_docs_chat]</code>
+                <h2><?php _e('Usage Instructions', 'fahm-faris'); ?></h2>
+                <h3><?php _e('Shortcode', 'fahm-faris'); ?></h3>
+                <p><?php _e('Add the chat widget to any page or post using:', 'fahm-faris'); ?></p>
+                <code>[fahm_faris_chat]</code>
                 
-                <h3 style="margin-top: 20px;"><?php _e('Shortcode Parameters', 'ibm-docs-llm'); ?></h3>
+                <h3 style="margin-top: 20px;"><?php _e('Shortcode Parameters', 'fahm-faris'); ?></h3>
                 <ul>
-                    <li><code>title</code> - <?php _e('Widget title', 'ibm-docs-llm'); ?></li>
-                    <li><code>placeholder</code> - <?php _e('Input placeholder text', 'ibm-docs-llm'); ?></li>
-                    <li><code>theme</code> - <?php _e('Theme (light or dark)', 'ibm-docs-llm'); ?></li>
+                    <li><code>title</code> - <?php _e('Widget title', 'fahm-faris'); ?></li>
+                    <li><code>placeholder</code> - <?php _e('Input placeholder text', 'fahm-faris'); ?></li>
+                    <li><code>theme</code> - <?php _e('Theme (light or dark)', 'fahm-faris'); ?></li>
                 </ul>
                 
-                <p><?php _e('Example:', 'ibm-docs-llm'); ?></p>
-                <code>[ibm_docs_chat title="Ask Questions" theme="dark"]</code>
+                <p><?php _e('Example:', 'fahm-faris'); ?></p>
+                <code>[fahm_faris_chat title="Ask Questions" theme="dark"]</code>
             </div>
         </div>
         <?php
@@ -220,29 +220,29 @@ class IBM_Docs_LLM_Settings {
      * Render API section description
      */
     public static function render_api_section() {
-        echo '<p>' . __('Configure the connection to your IBM Docs LLM backend API.', 'ibm-docs-llm') . '</p>';
+        echo '<p>' . __('Configure the connection to your Fahm Faris backend API.', 'fahm-faris') . '</p>';
     }
     
     /**
      * Render widget section description
      */
     public static function render_widget_section() {
-        echo '<p>' . __('Customize the appearance and behavior of the chat widget.', 'ibm-docs-llm') . '</p>';
+        echo '<p>' . __('Customize the appearance and behavior of the chat widget.', 'fahm-faris') . '</p>';
     }
     
     /**
      * Render API URL field
      */
     public static function render_api_url_field() {
-        $value = get_option('ibm_docs_llm_api_url', '');
+        $value = get_option('fahm_faris_api_url', '');
         ?>
         <input type="url" 
-               name="ibm_docs_llm_api_url" 
+               name="fahm_faris_api_url" 
                value="<?php echo esc_attr($value); ?>" 
                class="regular-text"
                placeholder="https://your-api.railway.app">
         <p class="description">
-            <?php _e('The URL of your backend API (e.g., https://your-api.railway.app)', 'ibm-docs-llm'); ?>
+            <?php _e('The URL of your backend API (e.g., https://your-api.railway.app)', 'fahm-faris'); ?>
         </p>
         <?php
     }
@@ -251,14 +251,14 @@ class IBM_Docs_LLM_Settings {
      * Render API key field
      */
     public static function render_api_key_field() {
-        $value = get_option('ibm_docs_llm_api_key', '');
+        $value = get_option('fahm_faris_api_key', '');
         ?>
         <input type="password" 
-               name="ibm_docs_llm_api_key" 
+               name="fahm_faris_api_key" 
                value="<?php echo esc_attr($value); ?>" 
                class="regular-text">
         <p class="description">
-            <?php _e('Your API key for authentication', 'ibm-docs-llm'); ?>
+            <?php _e('Your API key for authentication', 'fahm-faris'); ?>
         </p>
         <?php
     }
@@ -267,14 +267,14 @@ class IBM_Docs_LLM_Settings {
      * Render enable widget field
      */
     public static function render_enable_widget_field() {
-        $value = get_option('ibm_docs_llm_enable_widget', false);
+        $value = get_option('fahm_faris_enable_widget', false);
         ?>
         <label>
             <input type="checkbox" 
-                   name="ibm_docs_llm_enable_widget" 
+                   name="fahm_faris_enable_widget" 
                    value="1" 
                    <?php checked($value, true); ?>>
-            <?php _e('Show floating chat widget on all pages', 'ibm-docs-llm'); ?>
+            <?php _e('Show floating chat widget on all pages', 'fahm-faris'); ?>
         </label>
         <?php
     }
@@ -283,10 +283,10 @@ class IBM_Docs_LLM_Settings {
      * Render widget title field
      */
     public static function render_widget_title_field() {
-        $value = get_option('ibm_docs_llm_widget_title', __('Ask IBM Docs', 'ibm-docs-llm'));
+        $value = get_option('fahm_faris_widget_title', __('FAHM Faris', 'fahm-faris'));
         ?>
         <input type="text" 
-               name="ibm_docs_llm_widget_title" 
+               name="fahm_faris_widget_title" 
                value="<?php echo esc_attr($value); ?>" 
                class="regular-text">
         <?php
@@ -296,10 +296,10 @@ class IBM_Docs_LLM_Settings {
      * Render placeholder field
      */
     public static function render_placeholder_field() {
-        $value = get_option('ibm_docs_llm_placeholder', __('Ask a question about IBM...', 'ibm-docs-llm'));
+        $value = get_option('fahm_faris_placeholder', __('Ask a question about IBM...', 'fahm-faris'));
         ?>
         <input type="text" 
-               name="ibm_docs_llm_placeholder" 
+               name="fahm_faris_placeholder" 
                value="<?php echo esc_attr($value); ?>" 
                class="regular-text">
         <?php
@@ -309,11 +309,11 @@ class IBM_Docs_LLM_Settings {
      * Render theme field
      */
     public static function render_theme_field() {
-        $value = get_option('ibm_docs_llm_theme', 'light');
+        $value = get_option('fahm_faris_theme', 'light');
         ?>
-        <select name="ibm_docs_llm_theme">
-            <option value="light" <?php selected($value, 'light'); ?>><?php _e('Light', 'ibm-docs-llm'); ?></option>
-            <option value="dark" <?php selected($value, 'dark'); ?>><?php _e('Dark', 'ibm-docs-llm'); ?></option>
+        <select name="fahm_faris_theme">
+            <option value="light" <?php selected($value, 'light'); ?>><?php _e('Light', 'fahm-faris'); ?></option>
+            <option value="dark" <?php selected($value, 'dark'); ?>><?php _e('Dark', 'fahm-faris'); ?></option>
         </select>
         <?php
     }
@@ -322,13 +322,13 @@ class IBM_Docs_LLM_Settings {
      * Render position field
      */
     public static function render_position_field() {
-        $value = get_option('ibm_docs_llm_position', 'bottom-right');
+        $value = get_option('fahm_faris_position', 'bottom-right');
         ?>
-        <select name="ibm_docs_llm_position">
-            <option value="bottom-right" <?php selected($value, 'bottom-right'); ?>><?php _e('Bottom Right', 'ibm-docs-llm'); ?></option>
-            <option value="bottom-left" <?php selected($value, 'bottom-left'); ?>><?php _e('Bottom Left', 'ibm-docs-llm'); ?></option>
-            <option value="top-right" <?php selected($value, 'top-right'); ?>><?php _e('Top Right', 'ibm-docs-llm'); ?></option>
-            <option value="top-left" <?php selected($value, 'top-left'); ?>><?php _e('Top Left', 'ibm-docs-llm'); ?></option>
+        <select name="fahm_faris_position">
+            <option value="bottom-right" <?php selected($value, 'bottom-right'); ?>><?php _e('Bottom Right', 'fahm-faris'); ?></option>
+            <option value="bottom-left" <?php selected($value, 'bottom-left'); ?>><?php _e('Bottom Left', 'fahm-faris'); ?></option>
+            <option value="top-right" <?php selected($value, 'top-right'); ?>><?php _e('Top Right', 'fahm-faris'); ?></option>
+            <option value="top-left" <?php selected($value, 'top-left'); ?>><?php _e('Top Left', 'fahm-faris'); ?></option>
         </select>
         <?php
     }

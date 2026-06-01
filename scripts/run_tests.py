@@ -63,7 +63,7 @@ def run_tests(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run tests for IBM Docs LLM")
+    parser = argparse.ArgumentParser(description="Run tests for Fahm Faris")
     
     parser.add_argument(
         "--coverage",

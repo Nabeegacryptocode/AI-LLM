@@ -1,5 +1,5 @@
 """
-Configuration management for IBM Docs LLM API
+Configuration management for Fahm Faris API
 """
 from pydantic_settings import BaseSettings
 from typing import List
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     # Vector DB Settings
     PINECONE_API_KEY: str
     PINECONE_ENVIRONMENT: str
-    PINECONE_INDEX_NAME: str = "ibm-docs"
+    PINECONE_INDEX_NAME: str = "fahm-faris"
     PINECONE_CLOUD: str = "aws"  # Cloud provider for Pinecone serverless
     
     # Redis Settings
@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     MIN_RELEVANCE_SCORE: float = 0.3
     
     # Database Settings
-    DATABASE_URL: str = "sqlite:///./ibm_docs_llm.db"
+    DATABASE_URL: str = "sqlite:///./fahm_faris.db"
     
     # Web Search Settings
     WEB_SEARCH_ENABLED: bool = True

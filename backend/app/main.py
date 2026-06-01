@@ -1,5 +1,5 @@
 """
-Main FastAPI application for IBM Docs LLM API
+Main FastAPI application for Fahm Faris API
 """
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup and shutdown events"""
     # Startup
-    logger.info("Starting IBM Docs LLM API")
+    logger.info("Starting Fahm Faris API")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
     logger.info(f"LLM Model: {settings.LLM_MODEL}")
     
@@ -35,14 +35,14 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("Shutting down IBM Docs LLM API")
+    logger.info("Shutting down Fahm Faris API")
     # Cleanup resources here if needed
     # await cleanup_services()
 
 
 # Create FastAPI application
 app = FastAPI(
-    title="IBM Docs LLM API",
+    title="Fahm Faris API",
     version="1.0.0",
     description="RAG-powered Q&A system for IBM documentation",
     lifespan=lifespan,
@@ -108,7 +108,7 @@ app.include_router(cache.router, prefix="/api", tags=["Cache"])
 async def root():
     """Root endpoint"""
     return {
-        "message": "IBM Docs LLM API",
+        "message": "Fahm Faris API",
         "version": "1.0.0",
         "docs": "/docs" if settings.ENVIRONMENT == "development" else "Documentation disabled in production"
     }

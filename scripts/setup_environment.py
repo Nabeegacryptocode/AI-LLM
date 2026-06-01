@@ -33,7 +33,7 @@ def run_command(cmd, description):
 def main():
     """Main setup function"""
     print("\n" + "="*60)
-    print("  IBM Docs LLM - Environment Setup")
+    print("  Fahm Faris - Environment Setup")
     print("="*60)
     
     # Get backend directory

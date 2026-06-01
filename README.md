@@ -1,4 +1,4 @@
-# IBM Documentation LLM System
+# Fahm Faris
 
 An AI-powered question-answering system that integrates with WordPress and uses IBM documentation as its knowledge base. Built with Retrieval Augmented Generation (RAG) to provide accurate, context-aware responses.
 
@@ -46,7 +46,7 @@ graph LR
 1. **Clone the repository**:
 ```bash
 git clone <repository-url>
-cd ibm-docs-llm
+cd fahm-faris
 ```
 
 2. **Set up Python environment**:
@@ -85,23 +85,23 @@ The API will be available at `http://localhost:8000`
 1. **Install the plugin**:
 ```bash
 cd wordpress-plugin
-zip -r ibm-docs-llm.zip ibm-docs-llm/
+zip -r fahm-faris.zip FAHMLLM3/
 ```
 
 2. **Upload to WordPress**:
    - Go to WordPress Admin → Plugins → Add New
    - Click "Upload Plugin"
-   - Select `ibm-docs-llm.zip`
+   - Select `fahm-faris.zip`
    - Click "Install Now" and then "Activate"
 
 3. **Configure the plugin**:
-   - Go to Settings → IBM Docs LLM
+   - Go to Settings → Fahm Faris
    - Enter your Backend API URL (e.g., `https://your-api.railway.app`)
    - Enter your API Key
    - Save settings
 
 4. **Add chat widget to your site**:
-   - Use shortcode: `[ibm_docs_chat]`
+   - Use shortcode: `[fahm_faris_chat]`
    - Or enable the floating widget in plugin settings
 
 ## 📚 Documentation
@@ -166,7 +166,7 @@ MAX_TOKENS=1000
 # Vector DB Settings
 PINECONE_API_KEY=your_pinecone_key
 PINECONE_ENVIRONMENT=us-west1-gcp
-PINECONE_INDEX_NAME=ibm-docs
+PINECONE_INDEX_NAME=fahm-faris
 
 # Redis Settings
 REDIS_URL=redis://localhost:6379
@@ -178,12 +178,12 @@ CHUNK_SIZE=800
 CHUNK_OVERLAP=200
 
 # Database
-DATABASE_URL=postgresql://user:pass@localhost/ibm_docs_llm
+DATABASE_URL=postgresql://user:pass@localhost/fahm_faris
 ```
 
 ### WordPress Plugin Settings
 
-Configure in WordPress Admin → Settings → IBM Docs LLM:
+Configure in WordPress Admin → Settings → Fahm Faris:
 
 - **API URL**: Your backend API endpoint
 - **API Key**: Secure API key for authentication
@@ -197,12 +197,12 @@ Configure in WordPress Admin → Settings → IBM Docs LLM:
 
 1. **Shortcode in posts/pages**:
 ```
-[ibm_docs_chat title="Ask IBM Docs" theme="light"]
+[fahm_faris_chat title="Ask Fahm Faris" theme="light"]
 ```
 
 2. **PHP template**:
 ```php
-<?php echo do_shortcode('[ibm_docs_chat]'); ?>
+<?php echo do_shortcode('[fahm_faris_chat]'); ?>
 ```
 
 3. **Floating widget**: Enable in plugin settings
@@ -283,7 +283,7 @@ railway up
 1. **Create release**:
 ```bash
 cd wordpress-plugin
-zip -r ibm-docs-llm-v1.0.0.zip ibm-docs-llm/
+zip -r fahm-faris-v1.0.0.zip FAHMLLM3/
 ```
 
 2. **Upload to WordPress** or distribute via WordPress.org
@@ -367,7 +367,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Project Lead**: Your Name
 - **Email**: your.email@example.com
 - **Website**: https://your-website.com
-- **GitHub**: https://github.com/yourusername/ibm-docs-llm
+- **GitHub**: https://github.com/yourusername/fahm-faris
 
 ---
 
