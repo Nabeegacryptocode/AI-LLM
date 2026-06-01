@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     # Vector DB Settings
     PINECONE_API_KEY: str
     PINECONE_ENVIRONMENT: str
-    PINECONE_INDEX_NAME: str = "fahm-faris"
+    PINECONE_INDEX_NAME: str = "ibm-docs"
     PINECONE_CLOUD: str = "aws"  # Cloud provider for Pinecone serverless
     
     # Redis Settings
