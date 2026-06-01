@@ -3,7 +3,7 @@
     
     $(document).ready(function() {
         // Admin functionality can be added here
-        console.log('IBM Docs LLM Admin loaded');
+        console.log('Fahm Faris Admin loaded');
     });
     
 })(jQuery);

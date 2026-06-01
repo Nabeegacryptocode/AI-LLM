@@ -18,10 +18,10 @@ class Fahm_Faris_Settings {
      */
     public static function add_settings_page() {
         add_options_page(
-            __('IBM Docs LLM Settings', 'ibm-docs-llm'),
-            __('IBM Docs LLM', 'ibm-docs-llm'),
+            __('Fahm Faris Settings', 'fahm-faris'),
+            __('Fahm Faris', 'fahm-faris'),
             'manage_options',
-            'ibm-docs-llm',
+            'fahm-faris',
             array(__CLASS__, 'render_settings_page')
         );
     }
