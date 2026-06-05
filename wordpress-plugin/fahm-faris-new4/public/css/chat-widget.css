@@ -44,21 +44,29 @@
     box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
     transition: background 0.3s ease, box-shadow 0.3s ease;
     font-size: 28px;
-    animation: walk-around 8s ease-in-out infinite;
+}
+
+/* Default animation for bottom-right */
+#fahm-faris-chat-widget.position-bottom-right .chat-toggle {
+    animation: walk-left 8s ease-in-out infinite;
+}
+
+/* Reverse animation for bottom-left */
+#fahm-faris-chat-widget.position-bottom-left .chat-toggle {
+    animation: walk-right 8s ease-in-out infinite;
 }
 
 .chat-toggle:hover {
     background: linear-gradient(135deg, #138496 0%, #17a2b8 100%);
     box-shadow: 0 6px 20px rgba(23, 162, 184, 0.6);
-    animation: walk-around 8s ease-in-out infinite;
 }
 
 .chat-toggle.active {
-    animation: none;
+    animation: none !important;
 }
 
-/* Walking animation - moves icon around in a small square path */
-@keyframes walk-around {
+/* Walking animation LEFT (for bottom-right corner) */
+@keyframes walk-left {
     0% {
         transform: translate(0, 0) scale(1);
     }
@@ -76,6 +84,37 @@
     }
     62.5% {
         transform: translate(-40px, -40px) scale(1.05);
+    }
+    75% {
+        transform: translate(0, -40px) scale(1);
+    }
+    87.5% {
+        transform: translate(0, -40px) scale(1.05);
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+/* Walking animation RIGHT (for bottom-left corner) */
+@keyframes walk-right {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    12.5% {
+        transform: translate(0, 0) scale(1.05);
+    }
+    25% {
+        transform: translate(40px, 0) scale(1);
+    }
+    37.5% {
+        transform: translate(40px, 0) scale(1.05);
+    }
+    50% {
+        transform: translate(40px, -40px) scale(1);
+    }
+    62.5% {
+        transform: translate(40px, -40px) scale(1.05);
     }
     75% {
         transform: translate(0, -40px) scale(1);
