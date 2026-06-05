@@ -17,9 +17,9 @@ class Settings(BaseSettings):
     
     # LLM Settings
     OPENAI_API_KEY: str
-    LLM_MODEL: str = "gpt-4o-mini"
+    LLM_MODEL: str = "gpt-4o"  # Upgraded to GPT-4o (most advanced model)
     LLM_TEMPERATURE: float = 0.7
-    MAX_TOKENS: int = 1000
+    MAX_TOKENS: int = 2000  # Increased for better responses
     
     # Embedding Settings
     EMBEDDING_MODEL: str = "text-embedding-3-small"
