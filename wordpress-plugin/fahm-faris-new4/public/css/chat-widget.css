@@ -106,7 +106,7 @@
     }
 }
 
-/* Bottom-left: Clockwise (up → right → down → left) */
+/* Bottom-left: Move right first (right → up → left → down) */
 @keyframes walk-square-cw {
     0% {
         transform: translate(0, 0) scale(1);
@@ -115,10 +115,10 @@
         transform: translate(0, 0) scale(1.05);
     }
     25% {
-        transform: translate(0, -40px) scale(1);
+        transform: translate(40px, 0) scale(1);
     }
     37.5% {
-        transform: translate(0, -40px) scale(1.05);
+        transform: translate(40px, 0) scale(1.05);
     }
     50% {
         transform: translate(40px, -40px) scale(1);
@@ -127,10 +127,10 @@
         transform: translate(40px, -40px) scale(1.05);
     }
     75% {
-        transform: translate(40px, 0) scale(1);
+        transform: translate(0, -40px) scale(1);
     }
     87.5% {
-        transform: translate(40px, 0) scale(1.05);
+        transform: translate(0, -40px) scale(1.05);
     }
     100% {
         transform: translate(0, 0) scale(1);
