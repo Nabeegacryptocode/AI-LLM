@@ -46,14 +46,24 @@
     font-size: 28px;
 }
 
-/* Default animation for bottom-right */
-#fahm-faris-chat-widget.position-bottom-right .chat-toggle {
-    animation: walk-left 8s ease-in-out infinite;
+/* Bottom-right: walks in a square counter-clockwise */
+.position-bottom-right .chat-toggle {
+    animation: walk-square-ccw 8s ease-in-out infinite;
 }
 
-/* Reverse animation for bottom-left */
-#fahm-faris-chat-widget.position-bottom-left .chat-toggle {
-    animation: walk-right 8s ease-in-out infinite;
+/* Bottom-left: walks in a square clockwise */
+.position-bottom-left .chat-toggle {
+    animation: walk-square-cw 8s ease-in-out infinite;
+}
+
+/* Top-right: gentle bounce */
+.position-top-right .chat-toggle {
+    animation: gentle-bounce 3s ease-in-out infinite;
+}
+
+/* Top-left: gentle sway */
+.position-top-left .chat-toggle {
+    animation: gentle-sway 4s ease-in-out infinite;
 }
 
 .chat-toggle:hover {
@@ -65,8 +75,8 @@
     animation: none !important;
 }
 
-/* Walking animation LEFT (for bottom-right corner) */
-@keyframes walk-left {
+/* Bottom-right: Counter-clockwise (up → left → down → right) */
+@keyframes walk-square-ccw {
     0% {
         transform: translate(0, 0) scale(1);
     }
@@ -74,10 +84,10 @@
         transform: translate(0, 0) scale(1.05);
     }
     25% {
-        transform: translate(-40px, 0) scale(1);
+        transform: translate(0, -40px) scale(1);
     }
     37.5% {
-        transform: translate(-40px, 0) scale(1.05);
+        transform: translate(0, -40px) scale(1.05);
     }
     50% {
         transform: translate(-40px, -40px) scale(1);
@@ -86,18 +96,18 @@
         transform: translate(-40px, -40px) scale(1.05);
     }
     75% {
-        transform: translate(0, -40px) scale(1);
+        transform: translate(-40px, 0) scale(1);
     }
     87.5% {
-        transform: translate(0, -40px) scale(1.05);
+        transform: translate(-40px, 0) scale(1.05);
     }
     100% {
         transform: translate(0, 0) scale(1);
     }
 }
 
-/* Walking animation RIGHT (for bottom-left corner) */
-@keyframes walk-right {
+/* Bottom-left: Clockwise (up → right → down → left) */
+@keyframes walk-square-cw {
     0% {
         transform: translate(0, 0) scale(1);
     }
@@ -105,10 +115,10 @@
         transform: translate(0, 0) scale(1.05);
     }
     25% {
-        transform: translate(40px, 0) scale(1);
+        transform: translate(0, -40px) scale(1);
     }
     37.5% {
-        transform: translate(40px, 0) scale(1.05);
+        transform: translate(0, -40px) scale(1.05);
     }
     50% {
         transform: translate(40px, -40px) scale(1);
@@ -117,13 +127,33 @@
         transform: translate(40px, -40px) scale(1.05);
     }
     75% {
-        transform: translate(0, -40px) scale(1);
+        transform: translate(40px, 0) scale(1);
     }
     87.5% {
-        transform: translate(0, -40px) scale(1.05);
+        transform: translate(40px, 0) scale(1.05);
     }
     100% {
         transform: translate(0, 0) scale(1);
+    }
+}
+
+/* Top-right: Gentle vertical bounce */
+@keyframes gentle-bounce {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-15px) scale(1.05);
+    }
+}
+
+/* Top-left: Gentle horizontal sway */
+@keyframes gentle-sway {
+    0%, 100% {
+        transform: translateX(0) scale(1);
+    }
+    50% {
+        transform: translateX(15px) scale(1.05);
     }
 }
 
