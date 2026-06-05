@@ -57,7 +57,7 @@
     animation: none;
 }
 
-/* Walking animation - moves icon around in a square path (clockwise to the right) */
+/* Walking animation - moves icon around in a square path (counter-clockwise to the left) */
 @keyframes walk-around {
     0% {
         transform: translate(0, 0) scale(1);
@@ -66,16 +66,16 @@
         transform: translate(0, 0) scale(1.05);
     }
     25% {
-        transform: translate(80px, 0) scale(1);
+        transform: translate(-80px, 0) scale(1);
     }
     37.5% {
-        transform: translate(80px, 0) scale(1.05);
+        transform: translate(-80px, 0) scale(1.05);
     }
     50% {
-        transform: translate(80px, -80px) scale(1);
+        transform: translate(-80px, -80px) scale(1);
     }
     62.5% {
-        transform: translate(80px, -80px) scale(1.05);
+        transform: translate(-80px, -80px) scale(1.05);
     }
     75% {
         transform: translate(0, -80px) scale(1);
