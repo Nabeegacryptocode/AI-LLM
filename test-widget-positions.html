@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fahm Faris Widget - All Positions Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .position-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .position-btn {
+            padding: 15px 20px;
+            border: 2px solid #17a2b8;
+            background: white;
+            color: #17a2b8;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .position-btn:hover {
+            background: #17a2b8;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+        }
+        
+        .position-btn.active {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .info-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+            margin-bottom: 20px;
+        }
+        
+        .info-box h3 {
+            margin-top: 0;
+            color: #17a2b8;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #17a2b8;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Fahm Faris Widget - Position Test</h1>
+        <p class="subtitle">Test all 4 widget positions dynamically</p>
+        
+        <div class="info-box">
+            <h3>Select Widget Position</h3>
+            <p>Click any button below to change the widget position in real-time:</p>
+        </div>
+        
+        <div class="position-selector">
+            <button class="position-btn active" onclick="changePosition('bottom-right')">
+                📍 Bottom Right
+            </button>
+            <button class="position-btn" onclick="changePosition('bottom-left')">
+                📍 Bottom Left
+            </button>
+            <button class="position-btn" onclick="changePosition('top-right')">
+                📍 Top Right
+            </button>
+            <button class="position-btn" onclick="changePosition('top-left')">
+                📍 Top Left
+            </button>
+        </div>
+        
+        <div class="info-box">
+            <h3>Features Tested</h3>
+            <ul class="feature-list">
+                <li>Widget toggle button positioning</li>
+                <li>Prompt bubble positioning and arrow direction</li>
+                <li>Chat container positioning</li>
+                <li>Responsive behavior on mobile</li>
+                <li>Smooth animations and transitions</li>
+            </ul>
+        </div>
+        
+        <div class="info-box">
+            <h3>How to Use</h3>
+            <p><strong>1.</strong> Click the position buttons above to change widget location</p>
+            <p><strong>2.</strong> Click the chat toggle button (🤖) to open the widget</p>
+            <p><strong>3.</strong> Notice how the prompt bubble arrow adjusts based on position</p>
+            <p><strong>4.</strong> Try resizing your browser to test responsive behavior</p>
+        </div>
+    </div>
+    
+    <!-- Widget HTML -->
+    <div id="fahm-faris-chat-widget" class="fahm-faris-chat-widget floating position-bottom-right">
+        <!-- Prompt Bubble -->
+        <div class="chat-prompt" id="fahm-faris-chat-prompt">
+            <div class="prompt-bubble">
+                <span class="prompt-text">👋 Hi! Need help with IBM products?</span>
+                <button class="prompt-close" id="fahm-faris-prompt-close">×</button>
+            </div>
+        </div>
+
+        <!-- Chat Toggle Button -->
+        <div class="chat-toggle" id="fahm-faris-chat-toggle">
+            🤖
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container" id="fahm-faris-chat-container">
+            <div class="chat-header">
+                <h3>Fahm Faris Assistant</h3>
+                <div class="chat-actions">
+                    <button id="fahm-faris-chat-minimize" title="Minimize">−</button>
+                    <button id="fahm-faris-chat-close" title="Close">×</button>
+                </div>
+            </div>
+            
+            <div class="chat-messages" id="fahm-faris-chat-messages">
+                <div class="chat-message chat-message-assistant">
+                    <div class="message-content">
+                        👋 Welcome! I'm here to help you with IBM Maximo, Guardium, MaaS360, and more. How can I assist you today?
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-loading" id="fahm-faris-chat-loading">
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <form id="fahm-faris-chat-form">
+                    <input 
+                        type="text" 
+                        id="fahm-faris-chat-input" 
+                        class="chat-input" 
+                        placeholder="Ask about IBM products..."
+                        autocomplete="off">
+                    <button type="submit" class="chat-submit" id="fahm-faris-chat-submit">
+                        ➤
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load Widget CSS -->
+    <link rel="stylesheet" href="wordpress-plugin/fahm-faris-new/public/css/chat-widget.css">
+    
+    <!-- Widget JavaScript -->
+    <script>
+        // Simple widget functionality for demo
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggle = document.getElementById('fahm-faris-chat-toggle');
+            const container = document.getElementById('fahm-faris-chat-container');
+            const minimize = document.getElementById('fahm-faris-chat-minimize');
+            const close = document.getElementById('fahm-faris-chat-close');
+            const prompt = document.getElementById('fahm-faris-chat-prompt');
+            const promptClose = document.getElementById('fahm-faris-prompt-close');
+            const form = document.getElementById('fahm-faris-chat-form');
+            const input = document.getElementById('fahm-faris-chat-input');
+            const messages = document.getElementById('fahm-faris-chat-messages');
+            
+            // Show prompt after 2 seconds
+            setTimeout(() => {
+                prompt.style.display = 'block';
+            }, 2000);
+            
+            // Toggle chat
+            toggle.addEventListener('click', function() {
+                container.classList.toggle('active');
+                prompt.style.display = 'none';
+            });
+            
+            // Close prompt
+            promptClose.addEventListener('click', function(e) {
+                e.stopPropagation();
+                prompt.style.display = 'none';
+            });
+            
+            // Click prompt to open chat
+            prompt.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('prompt-close')) {
+                    container.classList.add('active');
+                    prompt.style.display = 'none';
+                }
+            });
+            
+            // Minimize
+            minimize.addEventListener('click', function() {
+                container.classList.remove('active');
+            });
+            
+            // Close
+            close.addEventListener('click', function() {
+                container.classList.remove('active');
+            });
+            
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const question = input.value.trim();
+                if (question) {
+                    // Add user message
+                    const userMsg = document.createElement('div');
+                    userMsg.className = 'chat-message chat-message-user';
+                    userMsg.innerHTML = `<div class="message-content">${escapeHtml(question)}</div>`;
+                    messages.appendChild(userMsg);
+                    input.value = '';
+                    
+                    // Simulate response
+                    setTimeout(() => {
+                        const botMsg = document.createElement('div');
+                        botMsg.className = 'chat-message chat-message-assistant';
+                        botMsg.innerHTML = `<div class="message-content">This is a demo. In production, I would answer: "${question}"</div>`;
+                        messages.appendChild(botMsg);
+                        messages.scrollTop = messages.scrollHeight;
+                    }, 1000);
+                    
+                    messages.scrollTop = messages.scrollHeight;
+                }
+            });
+        });
+        
+        // Change position function
+        function changePosition(position) {
+            const widget = document.getElementById('fahm-faris-chat-widget');
+            const buttons = document.querySelectorAll('.position-btn');
+            
+            // Remove all position classes
+            widget.classList.remove('position-bottom-right', 'position-bottom-left', 'position-top-right', 'position-top-left');
+            
+            // Add new position class
+            widget.classList.add('position-' + position);
+            
+            // Update button states
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Close chat if open
+            document.getElementById('fahm-faris-chat-container').classList.remove('active');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
