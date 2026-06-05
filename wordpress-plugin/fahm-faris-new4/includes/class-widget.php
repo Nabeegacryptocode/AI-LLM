@@ -22,7 +22,7 @@ class Fahm_Faris_Widget {
         
         $title = get_option('fahm_faris_widget_title', __('Chat with Faris', 'fahm-faris'));
         $placeholder = get_option('fahm_faris_placeholder', __('Ask me anything about FAHM...', 'fahm-faris'));
-        $position = get_option('fahm_faris_position', 'bottom-right');
+        $position = get_option('fahm_faris_position', 'bottom-left');
         
         self::render_widget_html($title, $placeholder, true, $position);
     }
