@@ -106,34 +106,19 @@
     }
 }
 
-/* Bottom-left: Stay on screen - only move right/up (right → up → down → right) */
+/* Bottom-left: Simple right bounce - never moves left */
 @keyframes walk-square-cw {
-    0% {
-        transform: translate(0, 0) scale(1);
-    }
-    12.5% {
-        transform: translate(0, 0) scale(1.05);
+    0%, 100% {
+        transform: translate(20px, 0) scale(1);
     }
     25% {
-        transform: translate(40px, 0) scale(1);
-    }
-    37.5% {
-        transform: translate(40px, 0) scale(1.05);
+        transform: translate(50px, 0) scale(1.05);
     }
     50% {
-        transform: translate(40px, -40px) scale(1);
-    }
-    62.5% {
-        transform: translate(40px, -40px) scale(1.05);
+        transform: translate(50px, -30px) scale(1);
     }
     75% {
-        transform: translate(40px, 0) scale(1);
-    }
-    87.5% {
-        transform: translate(40px, 0) scale(1.05);
-    }
-    100% {
-        transform: translate(0, 0) scale(1);
+        transform: translate(20px, -30px) scale(1.05);
     }
 }
 
